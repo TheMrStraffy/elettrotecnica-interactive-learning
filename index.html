@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Da Ohm a Karnaugh</title>
+<meta name="description" content="Ripasso interattivo di elettrotecnica ed elettronica digitale per la 3ª e 4ª superiore: legge di Ohm, resistori, reti, numeri binari, porte logiche, mappe di Karnaugh.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div class="brand">
+      <p class="eyebrow">Ripasso interattivo · Elettrotecnica ed Elettronica · classi 3ª e 4ª</p>
+      <h1>Da <span class="omega">Ω</span>hm a Karnaugh</h1>
+      <p class="lede">Muovi i cursori, accendi i bit, raggruppa gli 1. Ogni scheda ha il laboratorio a sinistra e gli appunti a destra; le sfide ti danno punti esperienza.</p>
+    </div>
+    <div class="xp" aria-live="polite">
+      <div class="xp-level"><span id="xp-rank">Livello 1 · Principiante</span><span class="xp-num"><span id="xp-points">0</span> XP</span></div>
+      <div class="xp-bar"><span id="xp-fill"></span></div>
+      <p class="xp-next" id="xp-next">60 XP al prossimo livello: Apprendista</p>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Argomenti">
+  <div class="wrap tabs-inner" role="tablist">
+    <button class="tab" role="tab" id="tab-circuito" aria-controls="circuito"><small>01</small>Il circuito</button>
+    <button class="tab" role="tab" id="tab-resistori" aria-controls="resistori"><small>02</small>Resistori</button>
+    <button class="tab" role="tab" id="tab-reti" aria-controls="reti"><small>03</small>Serie e parallelo</button>
+    <button class="tab" role="tab" id="tab-binario" aria-controls="binario"><small>04</small>Numeri binari</button>
+    <button class="tab" role="tab" id="tab-porte" aria-controls="porte"><small>05</small>Porte e circuiti</button>
+    <button class="tab" role="tab" id="tab-karnaugh" aria-controls="karnaugh"><small>06</small>Karnaugh</button>
+    <button class="tab" role="tab" id="tab-sfide" aria-controls="sfide"><small>★</small>Sfide</button>
+    <button class="tab" role="tab" id="tab-formulario" aria-controls="formulario"><small>Σ</small>Formulario</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ======================================================= 01 CIRCUITO -->
+<section class="panel" id="circuito" role="tabpanel" aria-labelledby="tab-circuito">
+  <header class="panel-head">
+    <h2>Il circuito elementare</h2>
+    <p>Un generatore reale, un interruttore, un carico e due strumenti. Cambia la forza elettromotrice, la resistenza interna e il carico: amperometro e voltmetro rispondono subito, e il resistore si scalda.</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="row" style="gap:18px">
+            <label class="switch"><input type="checkbox" id="ckt-closed" checked><span class="track"></span><span id="ckt-switch-label">Interruttore chiuso</span></label>
+            <label class="switch"><input type="checkbox" id="ckt-short-t"><span class="track"></span>Cortocircuita il carico</label>
+          </div>
+          <div class="seg" id="ckt-flow-mode" role="group" aria-label="Cosa mostrare">
+            <button type="button" data-mode="c" aria-pressed="true">Corrente convenzionale</button>
+            <button type="button" data-mode="e" aria-pressed="false">Elettroni</button>
+          </div>
+        </div>
+        <svg id="ckt-svg" class="schematic" viewBox="0 0 560 300" role="img"></svg>
+        <p class="hint" id="ckt-flow-note">Verso convenzionale: la corrente esce dal polo + del generatore, attraversa il carico e rientra dal polo −.</p>
+        <div class="meters">
+          <div class="meter"><span class="label">Amperometro</span><output id="m-I">—</output></div>
+          <div class="meter"><span class="label">Voltmetro A–B</span><output id="m-V">—</output></div>
+          <div class="meter"><span class="label">Potenza sul carico</span><output id="m-P">—</output></div>
+          <div class="meter"><span class="label">Rendimento</span><output id="m-eta">—</output></div>
+        </div>
+        <div class="feedback" id="ckt-warn" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Regolazioni</h3><p>Puoi anche scrivere i valori: 4,7k · 470 · 1M</p></div>
+        <div class="fields">
+          <div class="field">
+            <label for="ckt-E">Forza elettromotrice <var>E</var> <span class="hint">volt</span></label>
+            <input type="range" id="ckt-E-r" aria-label="Forza elettromotrice">
+            <input class="num" id="ckt-E" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ckt-rr">Resistenza interna <var>r</var> <span class="hint">ohm</span></label>
+            <input type="range" id="ckt-rr-r" aria-label="Resistenza interna">
+            <input class="num" id="ckt-rr" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ckt-R">Resistenza del carico <var>R</var> <span class="hint">ohm, scala logaritmica</span></label>
+            <input type="range" id="ckt-R-r" aria-label="Resistenza del carico">
+            <input class="num" id="ckt-R" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ckt-prated">Potenza massima del resistore</label>
+            <select class="input" id="ckt-prated" style="grid-column:1 / -1">
+              <option value="0.25" selected>¼ W (il classico resistore da breadboard)</option>
+              <option value="0.5">½ W</option>
+              <option value="1">1 W</option>
+              <option value="5">5 W (resistore di potenza)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>I conti, passo per passo</h3><p>Si aggiornano mentre muovi i cursori</p></div>
+        <ol class="steps" id="ckt-steps"></ol>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Caratteristica V–I e punto di lavoro</h3></div>
+        <svg id="ckt-graph" class="chart" viewBox="0 0 340 236" role="img" style="width:100%;height:auto;max-width:560px"></svg>
+        <div class="legend">
+          <span><i style="background:var(--pen)"></i>Generatore: <span class="f"><var>V</var> = <var>E</var> − <var>r</var>·<var>I</var></span></span>
+          <span><i style="background:var(--energy)"></i>Carico: <span class="f"><var>V</var> = <var>R</var>·<var>I</var></span></span>
+        </div>
+        <p class="hint" id="ckt-graph-note"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Missione</h3><p>+25 XP</p></div>
+        <p id="mission-text">Una missione blocca <var>E</var> e <var>r</var> e ti chiede di trovare il carico giusto. Prima fai il conto a mano, poi verifica con il cursore.</p>
+        <div class="row">
+          <button class="btn" type="button" id="mission-go">Nuova missione</button>
+          <button class="btn ghost" type="button" id="mission-hint" hidden>Suggerimento</button>
+          <button class="btn ghost" type="button" id="mission-stop" hidden>Esci dalla missione</button>
+        </div>
+        <div class="feedback" id="mission-fb" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti sul circuito elementare">
+      <header><h3>Appunti</h3><span class="hand">le basi, senza fretta</span></header>
+
+      <article class="note">
+        <h4>Carica e intensità di corrente</h4>
+        <p>La corrente elettrica è un movimento ordinato di cariche. L'<strong>intensità di corrente</strong> è la quantità di carica che attraversa una sezione del conduttore in un secondo:</p>
+        <div class="eq"><span><var>I</var> = <span class="frac"><span><var>Q</var></span><span><var>t</var></span></span></span><span class="u">ampere [A] = coulomb al secondo [C/s]</span></div>
+        <p>Nei metalli si muovono gli elettroni (carica −1,6·10⁻¹⁹ C). Per convenzione però il <strong>verso della corrente</strong> è quello delle cariche positive: esce dal polo + del generatore e rientra dal polo −. Premi "Elettroni" sopra lo schema per vedere il verso reale.</p>
+      </article>
+
+      <article class="note">
+        <h4>Differenza di potenziale (tensione)</h4>
+        <p>La ddp tra due punti A e B è il lavoro fatto dal campo elettrico per spostare la carica unitaria positiva da A a B:</p>
+        <div class="eq"><span><var>V</var><sub>AB</sub> = <var>V</var><sub>A</sub> − <var>V</var><sub>B</sub> = <span class="frac"><span><var>L</var></span><span><var>Q</var></span></span></span><span class="u">volt [V] = joule al coulomb [J/C]</span></div>
+        <p>"Tensione" e "differenza di potenziale" nella pratica sono sinonimi. Si misura con il <strong>voltmetro</strong>, collegato in parallelo ai due punti; un buon voltmetro ha resistenza interna altissima e non assorbe corrente.</p>
+      </article>
+
+      <article class="note">
+        <h4>Forza elettromotrice</h4>
+        <p>La f.e.m. <var>E</var> è il lavoro che il generatore compie, a spese di un'altra energia (chimica in una pila, meccanica in una dinamo), per portare la carica unitaria positiva dal polo − al polo + <em>al suo interno</em>, contro il campo elettrico:</p>
+        <div class="eq"><span><var>E</var> = <span class="frac"><span><var>L</var><sub>gen</sub></span><span><var>Q</var></span></span></span><span class="u">volt [V]</span></div>
+        <p>Nonostante il nome <strong>non è una forza</strong>: si misura in volt. È la tensione che leggi ai morsetti <strong>a circuito aperto</strong>, cioè con <var>I</var> = 0. Apri l'interruttore e guarda il voltmetro.</p>
+      </article>
+
+      <article class="note">
+        <h4>Il generatore reale</h4>
+        <p>Ogni generatore vero ha una resistenza interna <var>r</var>. Quando eroga corrente, una parte della f.e.m. si perde dentro il generatore:</p>
+        <div class="eq"><span><var>V</var> = <var>E</var> − <var>r</var> · <var>I</var></span></div>
+        <p>Più corrente chiedi, più la tensione ai morsetti scende: è la retta blu nel grafico. Un generatore <strong>ideale</strong> ha <var>r</var> = 0 e mantiene <var>V</var> = <var>E</var> con qualsiasi carico.</p>
+      </article>
+
+      <article class="note">
+        <h4>Prima legge di Ohm</h4>
+        <p>In un conduttore ohmico, a temperatura costante, la tensione ai capi è proporzionale alla corrente. La costante di proporzionalità è la <strong>resistenza</strong>: 1 Ω è la resistenza in cui 1 V fa passare 1 A.</p>
+        <div class="ohm-tri">
+          <svg id="tri-svg" viewBox="0 0 170 150" aria-label="Triangolo di Ohm: tocca la grandezza da trovare">
+            <path class="tri" d="M85 8 L162 142 H8 Z"/>
+            <line x1="40" y1="88" x2="130" y2="88" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="85" y1="88" x2="85" y2="142" stroke="var(--ink)" stroke-width="2"/>
+            <text data-q="V" x="85" y="72" text-anchor="middle" role="button" tabindex="0" aria-label="Trova V">V</text>
+            <text data-q="R" x="55" y="128" text-anchor="middle" role="button" tabindex="0" aria-label="Trova R">R</text>
+            <text data-q="I" x="115" y="128" text-anchor="middle" role="button" tabindex="0" aria-label="Trova I">I</text>
+          </svg>
+          <div style="display:grid;gap:6px">
+            <span class="label">Tocca la grandezza da trovare</span>
+            <div class="out" id="tri-out" aria-live="polite"></div>
+            <p class="hint" id="tri-why"></p>
+          </div>
+        </div>
+      </article>
+
+      <article class="note">
+        <h4>Legge di Ohm per il circuito completo</h4>
+        <div class="eq"><span><var>I</var> = <span class="frac"><span><var>E</var></span><span><var>R</var> + <var>r</var></span></span></span><span><var>E</var> = <var>R</var>·<var>I</var> + <var>r</var>·<var>I</var></span></div>
+        <p>La f.e.m. "spinge" la corrente attraverso tutta la resistenza della maglia, quella esterna e quella interna.</p>
+      </article>
+
+      <article class="note">
+        <h4>Potenza ed effetto Joule</h4>
+        <div class="eq"><span><var>P</var> = <var>V</var>·<var>I</var> = <var>R</var>·<var>I</var>² = <span class="frac"><span><var>V</var>²</span><span><var>R</var></span></span></span><span class="u">watt [W]</span></div>
+        <div class="eq"><span><var>W</var> = <var>P</var> · <var>t</var></span><span class="u">joule [J]; in bolletta kWh: 1 kWh = 3,6 MJ</span></div>
+        <p>Un resistore trasforma energia elettrica in calore. Ogni resistore ha una <strong>potenza massima</strong> (¼ W, ½ W…): superata quella si brucia. Il <strong>rendimento</strong> del generatore è η = <var>P</var><sub>utile</sub>/<var>P</var><sub>totale</sub> = <var>V</var>/<var>E</var>.</p>
+      </article>
+
+      <article class="note">
+        <h4>Circuito aperto e cortocircuito</h4>
+        <ul>
+          <li><strong>Aperto</strong>: <var>R</var> → ∞, <var>I</var> = 0, <var>V</var> = <var>E</var>.</li>
+          <li><strong>Cortocircuito</strong>: <var>R</var> = 0, <var>V</var> = 0, <var>I</var><sub>cc</sub> = <var>E</var>/<var>r</var>. Tutta la potenza si dissipa nel generatore: per questo esistono fusibili e magnetotermici.</li>
+          <li><strong>Massimo trasferimento di potenza</strong>: il carico riceve più potenza possibile quando <var>R</var> = <var>r</var>, con rendimento del 50%.</li>
+        </ul>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= 02 RESISTORI -->
+<section class="panel" id="resistori" role="tabpanel" aria-labelledby="tab-resistori" hidden>
+  <header class="panel-head">
+    <h2>Resistori e resistività</h2>
+    <p>Leggi il codice colori, poi scopri da cosa dipende la resistenza di un filo: materiale, lunghezza, sezione e temperatura.</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="card-head">
+          <h3>Codice colori</h3>
+          <div class="seg" id="res-bands" role="group" aria-label="Numero di fasce">
+            <button type="button" data-n="4" aria-pressed="true">4 fasce</button>
+            <button type="button" data-n="5" aria-pressed="false">5 fasce</button>
+          </div>
+        </div>
+        <svg id="res-svg" class="res-svg" viewBox="0 0 400 110" role="img"></svg>
+        <div class="row" style="justify-content:space-between;align-items:baseline">
+          <div class="big-value" id="res-value" aria-live="polite"></div>
+          <span class="tag" id="res-code"></span>
+        </div>
+        <p class="hint" id="res-range"></p>
+        <div class="band-pickers" id="band-pickers"></div>
+        <p id="res-read" style="color:var(--ink-2)"></p>
+        <div class="field" style="grid-template-columns:minmax(0,1fr)">
+          <label for="res-input">Oppure scrivi un valore e guarda i colori <span class="hint">es. 4k7, 220, 1M, 0,47</span></label>
+          <input class="input" id="res-input" autocomplete="off" style="grid-area:rng;max-width:240px">
+        </div>
+        <p class="hint" id="res-input-fb" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Gioco: leggi il resistore</h3><p>Serie di risposte giuste: <b id="game-streak">0</b></p></div>
+        <svg id="game-svg" class="res-svg" viewBox="0 0 400 110" role="img"></svg>
+        <div class="choices" id="game-choices"></div>
+        <div class="feedback" id="game-fb" aria-live="polite"></div>
+        <div class="row"><button class="btn" type="button" id="game-next">Altro resistore</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Seconda legge di Ohm</h3><p>La resistenza di un filo</p></div>
+        <svg id="w-vis" class="wire-vis" viewBox="0 0 420 70" role="img"></svg>
+        <div class="fields">
+          <div class="field">
+            <label for="w-mat">Materiale</label>
+            <select class="input" id="w-mat" style="grid-column:1 / -1"></select>
+          </div>
+          <div class="field">
+            <label for="w-L">Lunghezza <var>L</var> <span class="hint">metri</span></label>
+            <input type="range" id="w-L-r" aria-label="Lunghezza">
+            <input class="num" id="w-L" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="w-S">Sezione <var>S</var> <span class="hint">valori commerciali</span></label>
+            <select class="input" id="w-S" style="grid-column:1 / -1"></select>
+          </div>
+          <div class="field">
+            <label for="w-T">Temperatura <var>t</var> <span class="hint">°C</span></label>
+            <input type="range" id="w-T-r" aria-label="Temperatura">
+            <input class="num" id="w-T" inputmode="decimal" autocomplete="off">
+          </div>
+        </div>
+        <div class="big-value" id="w-R" aria-live="polite"></div>
+        <ol class="steps" id="w-steps"></ol>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti sui resistori">
+      <header><h3>Appunti</h3><span class="hand">colori e materiali</span></header>
+      <article class="note">
+        <h4>Seconda legge di Ohm</h4>
+        <p>La resistenza di un conduttore filiforme dipende dal materiale, dalla lunghezza e dalla sezione:</p>
+        <div class="eq"><span><var>R</var> = ρ · <span class="frac"><span><var>L</var></span><span><var>S</var></span></span></span><span class="u">ρ in Ω·mm²/m, <var>L</var> in m, <var>S</var> in mm²</span></div>
+        <p>ρ è la <strong>resistività</strong>, tipica del materiale. Unità alternativa: Ω·m (1 Ω·mm²/m = 10⁻⁶ Ω·m). Più il filo è lungo, più la resistenza cresce; più è grosso, più diminuisce. Il contrario della resistenza è la <strong>conduttanza</strong> <var>G</var> = 1/<var>R</var>, in siemens [S]; il contrario della resistività è la conduttività σ = 1/ρ.</p>
+      </article>
+      <article class="note">
+        <h4>Resistività e temperatura</h4>
+        <div class="eq"><span>ρ<sub><var>t</var></sub> = ρ<sub>20</sub> · (1 + α · (<var>t</var> − 20))</span></div>
+        <ul>
+          <li><strong>Metalli</strong>: α &gt; 0, la resistenza aumenta scaldandosi (il filamento di tungsteno di una lampadina a caldo ha una resistenza oltre 10 volte più alta che a freddo).</li>
+          <li><strong>Costantana, manganina</strong>: α ≈ 0, usate per resistori di precisione e shunt.</li>
+          <li><strong>Semiconduttori e grafite</strong>: α &lt; 0, la resistenza diminuisce (termistori NTC).</li>
+        </ul>
+      </article>
+      <article class="note">
+        <h4>Codice colori</h4>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Colore</th><th>Cifra</th><th>Moltiplicatore</th><th>Tolleranza</th></tr></thead>
+            <tbody>
+              <tr><td>Nero</td><td>0</td><td>× 1</td><td>—</td></tr>
+              <tr><td>Marrone</td><td>1</td><td>× 10</td><td>± 1 %</td></tr>
+              <tr><td>Rosso</td><td>2</td><td>× 100</td><td>± 2 %</td></tr>
+              <tr><td>Arancio</td><td>3</td><td>× 1 k</td><td>—</td></tr>
+              <tr><td>Giallo</td><td>4</td><td>× 10 k</td><td>—</td></tr>
+              <tr><td>Verde</td><td>5</td><td>× 100 k</td><td>± 0,5 %</td></tr>
+              <tr><td>Blu</td><td>6</td><td>× 1 M</td><td>± 0,25 %</td></tr>
+              <tr><td>Viola</td><td>7</td><td>× 10 M</td><td>± 0,1 %</td></tr>
+              <tr><td>Grigio</td><td>8</td><td>× 100 M</td><td>± 0,05 %</td></tr>
+              <tr><td>Bianco</td><td>9</td><td>× 1 G</td><td>—</td></tr>
+              <tr><td>Oro</td><td>—</td><td>× 0,1</td><td>± 5 %</td></tr>
+              <tr><td>Argento</td><td>—</td><td>× 0,01</td><td>± 10 %</td></tr>
+              <tr><td>Nessuna fascia</td><td>—</td><td>—</td><td>± 20 %</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Si legge partendo dal lato opposto alla fascia della tolleranza (che di solito è oro o argento ed è un po' staccata). Con <strong>4 fasce</strong>: due cifre, moltiplicatore, tolleranza. Con <strong>5 fasce</strong> (resistori di precisione, corpo azzurro): tre cifre, moltiplicatore, tolleranza.</p>
+      </article>
+      <article class="note">
+        <h4>Valori normalizzati e notazione da schema</h4>
+        <p>I resistori non esistono in tutti i valori, ma nelle <strong>serie normalizzate</strong>. La E12 (tolleranza 10 %) contiene 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 e i loro multipli di 10: ogni valore è circa il 21 % più grande del precedente, così gli intervalli di tolleranza si toccano. La E24 ha 24 valori per decade (5 %).</p>
+        <p>Sugli schemi la lettera del multiplo sostituisce la virgola: <span class="mono">4k7</span> = 4,7 kΩ, <span class="mono">R47</span> = 0,47 Ω, <span class="mono">1M5</span> = 1,5 MΩ. Così una virgola sbiadita non trasforma 4,7 kΩ in 47 kΩ.</p>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= 03 RETI -->
+<section class="panel" id="reti" role="tabpanel" aria-labelledby="tab-reti" hidden>
+  <header class="panel-head">
+    <h2>Serie, parallelo e Kirchhoff</h2>
+    <p>Scegli come collegare tre resistori. Lo schema mostra tensioni e correnti di ogni componente, la soluzione è scritta passo per passo e le leggi di Kirchhoff vengono verificate con i numeri.</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="card-head">
+          <div class="seg" id="net-config" role="group" aria-label="Tipo di collegamento">
+            <button type="button" data-cfg="serie">Serie</button>
+            <button type="button" data-cfg="parallelo">Parallelo</button>
+            <button type="button" data-cfg="misto" aria-pressed="true">Misto</button>
+          </div>
+          <label class="switch" id="net-r3-wrap"><input type="checkbox" id="net-three" checked><span class="track"></span>Usa <var>R</var><sub>3</sub></label>
+        </div>
+        <svg id="net-svg" class="schematic" viewBox="0 0 540 256" role="img"></svg>
+        <div class="meters" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div class="meter"><span class="label">Resistenza equivalente</span><output id="net-Req">—</output></div>
+          <div class="meter"><span class="label">Corrente dal generatore</span><output id="net-It">—</output></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Valori</h3><p>Scrivi pure 2k2, 470, 1M</p></div>
+        <div class="fields">
+          <div class="field">
+            <label for="net-E">Generatore ideale <var>E</var> <span class="hint">volt</span></label>
+            <input type="range" id="net-E-r" aria-label="Tensione del generatore">
+            <input class="num" id="net-E" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="net-R1"><span><var>R</var><sub>1</sub></span> <span class="hint">ohm</span></label>
+            <input type="range" id="net-R1-r" aria-label="R1">
+            <input class="num" id="net-R1" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="net-R2"><span><var>R</var><sub>2</sub></span> <span class="hint">ohm</span></label>
+            <input type="range" id="net-R2-r" aria-label="R2">
+            <input class="num" id="net-R2" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field" id="net-R3-field">
+            <label for="net-R3"><span><var>R</var><sub>3</sub></span> <span class="hint">ohm</span></label>
+            <input type="range" id="net-R3-r" aria-label="R3">
+            <input class="num" id="net-R3" inputmode="decimal" autocomplete="off">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Soluzione passo per passo</h3></div>
+        <ol class="steps" id="net-steps"></ol>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Verifica con Kirchhoff</h3></div>
+        <div class="forms" id="net-kirchhoff"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Esercizio lampo</h3><p>+15 XP, tolleranza 2 %</p></div>
+        <p class="quiz-q" id="ex-q"></p>
+        <div class="answer-row">
+          <input class="input" id="ex-in" inputmode="decimal" autocomplete="off" aria-label="Risultato">
+          <span class="unit" id="ex-unit"></span>
+          <button class="btn" type="button" id="ex-check">Verifica</button>
+        </div>
+        <div class="feedback" id="ex-fb" aria-live="polite"></div>
+        <div class="row">
+          <button class="btn ghost" type="button" id="ex-new">Nuovo esercizio</button>
+          <button class="btn ghost" type="button" id="ex-load">Mostrami la soluzione nello schema</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti su reti e Kirchhoff">
+      <header><h3>Appunti</h3><span class="hand">nodi, rami, maglie</span></header>
+      <article class="note">
+        <h4>Le parole della rete</h4>
+        <ul>
+          <li><strong>Nodo</strong>: punto in cui si collegano tre o più conduttori.</li>
+          <li><strong>Ramo</strong>: tratto di circuito tra due nodi, percorso da un'unica corrente.</li>
+          <li><strong>Maglia</strong>: percorso chiuso che parte da un nodo e ci ritorna senza passare due volte dallo stesso ramo.</li>
+        </ul>
+      </article>
+      <article class="note">
+        <h4>Collegamento in serie</h4>
+        <p>I componenti sono uno dopo l'altro: <strong>stessa corrente</strong>, le tensioni si sommano.</p>
+        <div class="eq"><span><var>R</var><sub>eq</sub> = <var>R</var><sub>1</sub> + <var>R</var><sub>2</sub> + … + <var>R</var><sub>n</sub></span></div>
+        <p>La resistenza equivalente è più grande della più grande. <strong>Partitore di tensione</strong>: <span class="f"><var>V</var><sub><var>k</var></sub> = <var>E</var> · <var>R</var><sub><var>k</var></sub> / <var>R</var><sub>eq</sub></span>.</p>
+      </article>
+      <article class="note">
+        <h4>Collegamento in parallelo</h4>
+        <p>I componenti sono collegati agli stessi due nodi: <strong>stessa tensione</strong>, le correnti si sommano.</p>
+        <div class="eq"><span><span class="frac"><span>1</span><span><var>R</var><sub>eq</sub></span></span> = <span class="frac"><span>1</span><span><var>R</var><sub>1</sub></span></span> + <span class="frac"><span>1</span><span><var>R</var><sub>2</sub></span></span> + …</span><span><var>G</var><sub>eq</sub> = <var>G</var><sub>1</sub> + <var>G</var><sub>2</sub> + …</span></div>
+        <p>Con due resistori: <span class="f"><var>R</var><sub>eq</sub> = <var>R</var><sub>1</sub><var>R</var><sub>2</sub> / (<var>R</var><sub>1</sub> + <var>R</var><sub>2</sub>)</span> (prodotto diviso somma). Con <var>n</var> resistori uguali: <var>R</var>/<var>n</var>. La resistenza equivalente è più piccola della più piccola.</p>
+        <p><strong>Partitore di corrente</strong> (due rami): <span class="f"><var>I</var><sub>1</sub> = <var>I</var> · <var>R</var><sub>2</sub> / (<var>R</var><sub>1</sub> + <var>R</var><sub>2</sub>)</span>. Al numeratore c'è la resistenza dell'<em>altro</em> ramo: la corrente preferisce la strada più facile.</p>
+      </article>
+      <article class="note">
+        <h4>Primo principio di Kirchhoff (LKC, ai nodi)</h4>
+        <div class="eq"><span>Σ <var>I</var><sub>entranti</sub> = Σ <var>I</var><sub>uscenti</sub></span></div>
+        <p>Le cariche non si accumulano in un nodo: è la conservazione della carica. Detto in altro modo, la somma algebrica delle correnti in un nodo è zero.</p>
+      </article>
+      <article class="note">
+        <h4>Secondo principio di Kirchhoff (LKT, alle maglie)</h4>
+        <div class="eq"><span>Σ <var>E</var> = Σ <var>R</var> · <var>I</var></span></div>
+        <p>Percorrendo una maglia, la somma delle f.e.m. è uguale alla somma delle cadute di tensione (conservazione dell'energia). Scegli un verso di percorrenza: le f.e.m. e le correnti concordi con quel verso si prendono positive, le altre negative.</p>
+      </article>
+      <article class="note">
+        <h4>Metodo per le reti miste</h4>
+        <ol>
+          <li>Individua le serie e i paralleli "puri" e riducili uno alla volta.</li>
+          <li>Continua fino ad avere una sola <var>R</var><sub>eq</sub> e calcola la corrente del generatore.</li>
+          <li>Torna indietro sugli schemi intermedi: con Ohm e i partitori trovi tensioni e correnti di ogni ramo.</li>
+          <li>Verifica con Kirchhoff e con il bilancio delle potenze.</li>
+        </ol>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= 04 BINARIO -->
+<section class="panel" id="binario" role="tabpanel" aria-labelledby="tab-binario" hidden>
+  <header class="panel-head">
+    <h2>Sistemi di numerazione</h2>
+    <p>Decimale, binario, ottale, esadecimale e BCD. Accendi i bit uno alla volta, guarda le conversioni passo per passo e prova la somma e la sottrazione in complemento a 2.</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="card-head">
+          <h3>Registro</h3>
+          <div class="seg" id="bin-n" role="group" aria-label="Numero di bit">
+            <button type="button" data-n="4" aria-pressed="false">4 bit</button>
+            <button type="button" data-n="8" aria-pressed="true">8 bit</button>
+            <button type="button" data-n="16" aria-pressed="false">16 bit</button>
+          </div>
+        </div>
+        <div class="bits-scroll"><div class="bits" id="bin-bits"></div></div>
+        <div class="bases">
+          <div class="base"><span class="label">Decimale</span><b id="bin-dec"></b></div>
+          <div class="base"><span class="label">Con segno (C2)</span><b id="bin-sgn"></b></div>
+          <div class="base"><span class="label">Esadecimale</span><b id="bin-hex"></b></div>
+          <div class="base"><span class="label">Ottale</span><b id="bin-oct"></b></div>
+          <div class="base wide"><span class="label">BCD del decimale</span><b id="bin-bcd"></b></div>
+        </div>
+        <p class="hint" id="bin-range"></p>
+        <div class="answer-row">
+          <label class="label" for="bin-in">Scrivi un numero</label>
+          <input class="input" id="bin-in" autocomplete="off" spellcheck="false">
+          <select class="input" id="bin-fmt" style="max-width:150px" aria-label="Base del numero scritto">
+            <option value="10">in base 10</option>
+            <option value="2">in base 2</option>
+            <option value="8">in base 8</option>
+            <option value="16">in base 16</option>
+          </select>
+        </div>
+        <p class="hint" id="bin-in-fb" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Da binario a decimale</h3><p>Somma dei pesi</p></div>
+        <p class="f conv" id="bin-weights"></p>
+        <div class="card-head"><h3>Da binario a esadecimale e ottale</h3><p>Gruppi da 4 e da 3 bit, partendo da destra</p></div>
+        <div class="groups" id="bin-hexgroup"></div>
+        <div class="groups" id="bin-octgroup"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Da decimale a un'altra base</h3>
+          <div class="seg" id="div-base" role="group" aria-label="Base di arrivo">
+            <button type="button" data-b="2">base 2</button>
+            <button type="button" data-b="8">base 8</button>
+            <button type="button" data-b="16">base 16</button>
+          </div>
+        </div>
+        <p class="hint">Metodo delle divisioni successive: dividi per la base finché il quoziente è 0 e tieni i resti.</p>
+        <div class="table-wrap"><table class="tbl div-table" id="div-table"></table></div>
+        <p class="f conv" id="div-result"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Somma e sottrazione a 8 bit</h3>
+          <div class="seg" id="ar-op" role="group" aria-label="Operazione">
+            <button type="button" data-op="add">A + B</button>
+            <button type="button" data-op="sub">A − B (in C2)</button>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="ar-a"><var>A</var> <span class="hint">0–255</span></label>
+            <input type="range" id="ar-a-r" aria-label="A">
+            <input class="num" id="ar-a" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ar-b"><var>B</var> <span class="hint">0–255</span></label>
+            <input type="range" id="ar-b-r" aria-label="B">
+            <input class="num" id="ar-b" inputmode="numeric" autocomplete="off">
+          </div>
+        </div>
+        <div id="ar-pre"></div>
+        <div class="table-wrap"><table class="arith" id="ar-table"></table></div>
+        <div class="note" id="ar-notes"></div>
+        <div class="row"><button class="btn ghost small" type="button" id="ar-rand">Numeri a caso</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Gioco: accendi i bit</h3><p>+15 XP se ce la fai in 10 secondi</p></div>
+        <p class="quiz-q">Scrivi <b class="big-inline" id="bg-target"></b> in binario accendendo i bit giusti. Adesso vale <b id="bg-now">0</b>.</p>
+        <div class="bits-scroll"><div class="bits" id="bg-bits"></div></div>
+        <div class="feedback" id="bg-fb" aria-live="polite"></div>
+        <div class="row"><button class="btn" type="button" id="bg-new">Nuovo numero</button></div>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti sui sistemi di numerazione">
+      <header><h3>Appunti</h3><span class="hand">tutto è una questione di base</span></header>
+      <article class="note">
+        <h4>Sistemi posizionali</h4>
+        <p>In un sistema posizionale in base <var>b</var> ogni cifra vale per la potenza della base corrispondente alla sua posizione (partendo da 0 a destra):</p>
+        <div class="eq"><span><var>N</var> = <var>c</var><sub><var>n</var>−1</sub>·<var>b</var><sup><var>n</var>−1</sup> + … + <var>c</var><sub>1</sub>·<var>b</var><sup>1</sup> + <var>c</var><sub>0</sub>·<var>b</var><sup>0</sup></span></div>
+        <p>Esempio: 1011<sub>2</sub> = 1·8 + 0·4 + 1·2 + 1·1 = 11<sub>10</sub>. Le cifre disponibili vanno da 0 a <var>b</var> − 1.</p>
+      </article>
+      <article class="note">
+        <h4>Il binario</h4>
+        <ul>
+          <li><strong>bit</strong>: una cifra binaria (0 o 1). <strong>Nibble</strong>: 4 bit. <strong>Byte</strong>: 8 bit.</li>
+          <li><strong>MSB</strong> (bit più significativo) a sinistra, <strong>LSB</strong> (meno significativo) a destra.</li>
+          <li>Con <var>n</var> bit si scrivono 2<sup><var>n</var></sup> combinazioni: da 0 a 2<sup><var>n</var></sup> − 1.</li>
+          <li>Regole della somma: 0 + 0 = 0, 0 + 1 = 1, 1 + 1 = 10 (scrivo 0, riporto 1), 1 + 1 + 1 = 11.</li>
+        </ul>
+      </article>
+      <article class="note">
+        <h4>Conversioni</h4>
+        <ul>
+          <li><strong>Base qualsiasi → decimale</strong>: somma dei pesi (cifra × potenza della base).</li>
+          <li><strong>Decimale → base <var>b</var></strong>: divisioni successive per <var>b</var>; i resti, letti dal basso verso l'alto, sono le cifre.</li>
+          <li><strong>Binario ↔ esadecimale</strong>: ogni cifra hex corrisponde a 4 bit (16 = 2⁴). Si raggruppa da destra.</li>
+          <li><strong>Binario ↔ ottale</strong>: ogni cifra ottale corrisponde a 3 bit (8 = 2³).</li>
+        </ul>
+        <div class="table-wrap">
+          <table class="tbl mono-tbl">
+            <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Dec</th><th>Bin</th><th>Hex</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>0000</td><td>0</td><td>8</td><td>1000</td><td>8</td></tr>
+              <tr><td>1</td><td>0001</td><td>1</td><td>9</td><td>1001</td><td>9</td></tr>
+              <tr><td>2</td><td>0010</td><td>2</td><td>10</td><td>1010</td><td>A</td></tr>
+              <tr><td>3</td><td>0011</td><td>3</td><td>11</td><td>1011</td><td>B</td></tr>
+              <tr><td>4</td><td>0100</td><td>4</td><td>12</td><td>1100</td><td>C</td></tr>
+              <tr><td>5</td><td>0101</td><td>5</td><td>13</td><td>1101</td><td>D</td></tr>
+              <tr><td>6</td><td>0110</td><td>6</td><td>14</td><td>1110</td><td>E</td></tr>
+              <tr><td>7</td><td>0111</td><td>7</td><td>15</td><td>1111</td><td>F</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="note">
+        <h4>Codice BCD</h4>
+        <p>Nel BCD (Binary Coded Decimal) ogni <em>cifra decimale</em> si scrive con 4 bit: 59 = 0101 1001. Le combinazioni da 1010 a 1111 non sono usate. È il codice dei display a 7 segmenti e dei contatori decimali.</p>
+      </article>
+      <article class="note">
+        <h4>Numeri negativi: complemento a 2</h4>
+        <p>Per ottenere −<var>N</var> su <var>n</var> bit: scrivi <var>N</var>, <strong>inverti tutti i bit</strong> (complemento a 1) e <strong>aggiungi 1</strong>.</p>
+        <div class="eq"><span>+5 = 00000101 → C1 = 11111010 → C2 = 11111011 = −5</span></div>
+        <ul>
+          <li>Il MSB fa da bit di segno: 0 positivo, 1 negativo.</li>
+          <li>Con <var>n</var> bit: da −2<sup><var>n</var>−1</sup> a 2<sup><var>n</var>−1</sup> − 1 (con 8 bit da −128 a +127).</li>
+          <li>La sottrazione diventa una somma: <var>A</var> − <var>B</var> = <var>A</var> + C2(<var>B</var>); il riporto finale si scarta.</li>
+          <li><strong>Overflow</strong>: sommando due numeri dello stesso segno esce un risultato di segno opposto. Il risultato non sta nei bit disponibili.</li>
+        </ul>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= 05 PORTE -->
+<section class="panel" id="porte" role="tabpanel" aria-labelledby="tab-porte" hidden>
+  <header class="panel-head">
+    <h2>Porte logiche e circuiti combinatori</h2>
+    <p>Tocca gli ingressi per cambiarli: i fili a 1 si colorano e il LED d'uscita si accende. Puoi passare dai simboli americani (ANSI) a quelli europei (IEC).</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="card-head">
+          <div class="seg" id="gate-type" role="group" aria-label="Porta">
+            <button type="button" data-g="AND">AND</button>
+            <button type="button" data-g="OR">OR</button>
+            <button type="button" data-g="NOT">NOT</button>
+            <button type="button" data-g="NAND">NAND</button>
+            <button type="button" data-g="NOR">NOR</button>
+            <button type="button" data-g="XOR">XOR</button>
+            <button type="button" data-g="XNOR">XNOR</button>
+          </div>
+        </div>
+        <div class="row" style="justify-content:space-between">
+          <div class="seg" id="gate-k" role="group" aria-label="Numero di ingressi">
+            <button type="button" data-k="2">2 ingressi</button>
+            <button type="button" data-k="3">3 ingressi</button>
+          </div>
+          <div class="seg" id="gate-style" role="group" aria-label="Simboli">
+            <button type="button" data-s="ansi">ANSI</button>
+            <button type="button" data-s="iec">IEC</button>
+          </div>
+        </div>
+        <div class="gate-box">
+          <svg id="gate-svg" class="schematic logic" viewBox="0 0 380 160" role="img"></svg>
+          <div class="table-wrap"><table class="tt" id="gate-tt"></table></div>
+        </div>
+        <p class="f gate-expr" id="gate-expr"></p>
+        <p id="gate-desc" style="color:var(--ink-2)"></p>
+        <p class="hint">Tocca una riga della tabella per impostare quegli ingressi.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Circuiti combinatori</h3>
+          <div class="seg" id="circ-style" role="group" aria-label="Simboli">
+            <button type="button" data-s="ansi">ANSI</button>
+            <button type="button" data-s="iec">IEC</button>
+          </div>
+        </div>
+        <div class="seg" id="circ-pick" role="group" aria-label="Circuito">
+          <button type="button" data-c="half">Semisommatore</button>
+          <button type="button" data-c="full">Sommatore completo</button>
+          <button type="button" data-c="mux">Multiplexer 2:1</button>
+          <button type="button" data-c="maj">Maggioranza</button>
+        </div>
+        <div class="circ-scroll"><svg id="circ-svg" class="schematic logic" viewBox="0 0 520 200" role="img"></svg></div>
+        <p class="mono state" id="circ-state" aria-live="polite"></p>
+        <p id="circ-note" style="color:var(--ink-2)"></p>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti su porte e circuiti">
+      <header><h3>Appunti</h3><span class="hand">0 e 1, falso e vero</span></header>
+      <article class="note">
+        <h4>Le porte fondamentali</h4>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Porta</th><th>Espressione</th><th><span class="mono">AB = 00 01 10 11</span></th></tr></thead>
+            <tbody>
+              <tr><td>AND</td><td class="f"><var>A</var>·<var>B</var></td><td class="mono">0 0 0 1</td></tr>
+              <tr><td>OR</td><td class="f"><var>A</var> + <var>B</var></td><td class="mono">0 1 1 1</td></tr>
+              <tr><td>NAND</td><td class="f"><span class="ov"><var>A</var>·<var>B</var></span></td><td class="mono">1 1 1 0</td></tr>
+              <tr><td>NOR</td><td class="f"><span class="ov"><var>A</var> + <var>B</var></span></td><td class="mono">1 0 0 0</td></tr>
+              <tr><td>XOR</td><td class="f"><var>A</var> ⊕ <var>B</var></td><td class="mono">0 1 1 0</td></tr>
+              <tr><td>XNOR</td><td class="f"><span class="ov"><var>A</var> ⊕ <var>B</var></span></td><td class="mono">1 0 0 1</td></tr>
+              <tr><td>NOT</td><td class="f"><span class="ov"><var>A</var></span></td><td class="mono"><var>A</var>=0 → 1, <var>A</var>=1 → 0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Nei simboli ANSI la forma dice la funzione (la "D" è l'AND, lo scudo curvo è l'OR); nei simboli IEC c'è sempre un rettangolo con dentro <span class="mono">&amp;</span>, <span class="mono">≥1</span>, <span class="mono">=1</span> o <span class="mono">1</span>. Il pallino sull'uscita significa negazione.</p>
+      </article>
+      <article class="note">
+        <h4>Porte universali</h4>
+        <p>Con sole porte NAND si ottiene tutto:</p>
+        <ul>
+          <li>NOT: NAND con gli ingressi uniti, <span class="f"><span class="ov"><var>A</var>·<var>A</var></span> = <span class="ov"><var>A</var></span></span>.</li>
+          <li>AND: NAND seguita da un NOT fatto con una NAND.</li>
+          <li>OR: negando gli ingressi, per De Morgan <span class="f"><span class="ov"><span class="ov"><var>A</var></span>·<span class="ov"><var>B</var></span></span> = <var>A</var> + <var>B</var></span>.</li>
+        </ul>
+        <p>Lo stesso vale per le NOR. Negli integrati (per esempio il 7400, quattro NAND a 2 ingressi) conviene usare un solo tipo di porta.</p>
+      </article>
+      <article class="note">
+        <h4>Circuiti combinatori</h4>
+        <p>Un circuito è <strong>combinatorio</strong> se le uscite dipendono solo dagli ingressi di quell'istante, senza memoria. Il procedimento di progetto è sempre lo stesso:</p>
+        <ol>
+          <li>dal testo del problema scrivi la <strong>tabella di verità</strong>;</li>
+          <li>ricava la <strong>forma canonica</strong> (somma di mintermini);</li>
+          <li>semplifica con l'algebra di Boole o con la <strong>mappa di Karnaugh</strong>;</li>
+          <li>disegna il <strong>circuito</strong> con le porte.</li>
+        </ol>
+        <p>La scheda <a href="#karnaugh" data-goto="karnaugh">Karnaugh</a> fa tutti e quattro i passaggi e disegna il circuito AND-OR finale.</p>
+      </article>
+      <article class="note">
+        <h4>Sommatori e multiplexer</h4>
+        <ul>
+          <li><strong>Semisommatore</strong>: somma due bit, <span class="f"><var>S</var> = <var>A</var> ⊕ <var>B</var></span>, <span class="f"><var>C</var> = <var>A</var><var>B</var></span>. Non tiene conto di un riporto in ingresso.</li>
+          <li><strong>Sommatore completo</strong>: somma due bit e il riporto precedente. In cascata forma i sommatori a più bit (ripple carry).</li>
+          <li><strong>Multiplexer</strong>: sceglie quale ingresso portare in uscita in base agli ingressi di selezione. Con <var>k</var> bit di selezione si sceglie tra 2<sup><var>k</var></sup> ingressi.</li>
+        </ul>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= 06 KARNAUGH -->
+<section class="panel" id="karnaugh" role="tabpanel" aria-labelledby="tab-karnaugh" hidden>
+  <header class="panel-head">
+    <h2>Tabella di verità, forme canoniche, mappe di Karnaugh</h2>
+    <p>Cambia le uscite nella tabella o direttamente nella mappa (0 → 1 → X → 0). Forma espansa, forma minima, gruppi e circuito si aggiornano insieme.</p>
+  </header>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div class="row">
+        <div class="seg" id="k-n" role="group" aria-label="Numero di variabili">
+          <button type="button" data-n="2">2 var.</button>
+          <button type="button" data-n="3">3 var.</button>
+          <button type="button" data-n="4">4 var.</button>
+        </div>
+        <select class="input" id="k-preset" aria-label="Esempi" style="max-width:300px"></select>
+      </div>
+      <div class="row">
+        <button class="btn ghost small" type="button" id="k-invert">Nega la funzione</button>
+        <button class="btn ghost small" type="button" id="k-clear">Tutto a 0</button>
+      </div>
+    </div>
+    <div class="logic-grid">
+      <div class="tt-scroll"><table class="tt" id="k-tt"></table></div>
+      <div style="display:grid;gap:14px;min-width:0">
+        <div class="card-head">
+          <h3 id="k-groups-title">Gruppi di 1 → forma minima SP</h3>
+          <div class="seg" id="k-mode" role="group" aria-label="Cosa raggruppare">
+            <button type="button" data-mode="sop">Raggruppa gli 1 (SP)</button>
+            <button type="button" data-mode="pos">Raggruppa gli 0 (PS)</button>
+          </div>
+        </div>
+        <div class="kmap-wrap"><div class="kmap" id="k-map"></div></div>
+        <ul class="group-list" id="k-groups"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="card">
+        <div class="card-head"><h3>Le forme della funzione</h3></div>
+        <div class="forms">
+          <div class="form-row"><span class="label">Notazione compatta</span><div class="expr" id="k-sigma"></div><div class="expr" id="k-pi"></div></div>
+          <div class="form-row"><span class="label">Forma canonica SP (espansa, somma di mintermini)</span><div class="expr" id="k-can-sop"></div><span class="meta" id="k-can-sop-meta"></span></div>
+          <div class="form-row"><span class="label">Forma minima SP (ridotta, dalla mappa)</span><div class="expr min" id="k-min-sop"></div><span class="meta" id="k-min-sop-meta"></span></div>
+          <div class="form-row"><span class="label">Forma canonica PS (espansa, prodotto di maxtermini)</span><div class="expr" id="k-can-pos"></div><span class="meta" id="k-can-pos-meta"></span></div>
+          <div class="form-row"><span class="label">Forma minima PS (ridotta, gruppi di 0)</span><div class="expr min" id="k-min-pos"></div><span class="meta" id="k-min-pos-meta"></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Il circuito della forma minima SP</h3><p>Tocca A, B, C, D in alto</p></div>
+        <div class="circ-scroll"><svg id="k-circ" class="schematic logic" viewBox="0 0 520 260" role="img"></svg></div>
+        <p class="hint" id="k-circ-note"></p>
+      </div>
+
+      <div class="card" id="training">
+        <div class="card-head"><h3>Allenamento: trova la forma minima</h3><p>+20 / +30 XP</p></div>
+        <div class="row" style="justify-content:space-between">
+          <div class="seg" id="t-level" role="group" aria-label="Difficoltà">
+            <button type="button" data-l="3">3 variabili</button>
+            <button type="button" data-l="4">4 variabili</button>
+            <button type="button" data-l="5">4 var. con X</button>
+          </div>
+          <div class="seg" id="t-view" role="group" aria-label="Come è dato il problema">
+            <button type="button" data-v="map">Mappa</button>
+            <button type="button" data-v="sigma">Σm</button>
+            <button type="button" data-v="exp">Forma espansa</button>
+          </div>
+        </div>
+        <p class="quiz-q" id="t-problem"></p>
+        <div class="kmap-wrap"><div class="kmap" id="t-map"></div></div>
+        <label class="label" for="t-in">La tua forma minima SP</label>
+        <input class="input" id="t-in" autocomplete="off" spellcheck="false" placeholder="es. A'B + AC" style="font-size:1.1rem">
+        <div class="expr-preview" id="t-preview" aria-live="polite"></div>
+        <div class="keypad" id="t-keypad">
+          <button type="button" data-k="A">A</button>
+          <button type="button" data-k="B">B</button>
+          <button type="button" data-k="C">C</button>
+          <button type="button" data-k="D">D</button>
+          <button type="button" data-k="'" aria-label="negazione">X̅</button>
+          <button type="button" data-k="+">+</button>
+          <button type="button" data-k="(">(</button>
+          <button type="button" data-k=")">)</button>
+          <button type="button" data-k="back" aria-label="cancella un carattere">⌫</button>
+          <button type="button" data-k="clear" class="wide">Svuota</button>
+        </div>
+        <p class="hint">Negazione: scrivi un apostrofo dopo la variabile (<span class="mono">A'</span>) oppure un punto esclamativo prima (<span class="mono">!A</span>). Il prodotto si scrive attaccato (<span class="mono">AB</span>) o con il punto.</p>
+        <div class="row">
+          <button class="btn" type="button" id="t-check">Verifica</button>
+          <button class="btn ghost" type="button" id="t-show">Mostra soluzione</button>
+          <button class="btn ghost" type="button" id="t-new">Nuovo esercizio</button>
+        </div>
+        <div class="feedback" id="t-fb" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <aside class="notes" aria-label="Appunti di algebra di Boole e mappe di Karnaugh">
+      <header><h3>Appunti</h3><span class="hand">dall'espansa alla ridotta</span></header>
+      <article class="note">
+        <h4>Algebra di Boole: i teoremi che servono</h4>
+        <div class="table-wrap">
+          <table class="tbl">
+            <tbody>
+              <tr><td>Identità</td><td class="f"><var>A</var> + 0 = <var>A</var></td><td class="f"><var>A</var> · 1 = <var>A</var></td></tr>
+              <tr><td>Elemento nullo</td><td class="f"><var>A</var> + 1 = 1</td><td class="f"><var>A</var> · 0 = 0</td></tr>
+              <tr><td>Idempotenza</td><td class="f"><var>A</var> + <var>A</var> = <var>A</var></td><td class="f"><var>A</var> · <var>A</var> = <var>A</var></td></tr>
+              <tr><td>Complemento</td><td class="f"><var>A</var> + <span class="ov"><var>A</var></span> = 1</td><td class="f"><var>A</var> · <span class="ov"><var>A</var></span> = 0</td></tr>
+              <tr><td>Doppia negazione</td><td class="f" colspan="2"><span class="ov"><span class="ov"><var>A</var></span></span> = <var>A</var></td></tr>
+              <tr><td>Distributiva</td><td class="f"><var>A</var>(<var>B</var> + <var>C</var>) = <var>A</var><var>B</var> + <var>A</var><var>C</var></td><td class="f"><var>A</var> + <var>B</var><var>C</var> = (<var>A</var> + <var>B</var>)(<var>A</var> + <var>C</var>)</td></tr>
+              <tr><td>Assorbimento</td><td class="f"><var>A</var> + <var>A</var><var>B</var> = <var>A</var></td><td class="f"><var>A</var> + <span class="ov"><var>A</var></span><var>B</var> = <var>A</var> + <var>B</var></td></tr>
+              <tr><td>De Morgan</td><td class="f"><span class="ov"><var>A</var> · <var>B</var></span> = <span class="ov"><var>A</var></span> + <span class="ov"><var>B</var></span></td><td class="f"><span class="ov"><var>A</var> + <var>B</var></span> = <span class="ov"><var>A</var></span> · <span class="ov"><var>B</var></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="note">
+        <h4>Mintermini e forma canonica SP ("espansa")</h4>
+        <p>Un <strong>mintermine</strong> è un prodotto che contiene <em>tutte</em> le variabili, dirette o negate, e vale 1 in una sola riga della tabella: variabile a 1 → diretta, a 0 → negata. Per la riga 5 = 101: <span class="f"><var>A</var><span class="ov"><var>B</var></span><var>C</var></span> = m<sub>5</sub>.</p>
+        <p>La <strong>prima forma canonica</strong> (somma di prodotti, SP) è la somma dei mintermini delle righe in cui <var>F</var> = 1. Si scrive anche in forma compatta: <var>F</var> = Σ<sub>m</sub>(1, 3, 5).</p>
+      </article>
+      <article class="note">
+        <h4>Maxtermini e forma canonica PS</h4>
+        <p>Un <strong>maxtermine</strong> è una somma che contiene tutte le variabili e vale 0 in una sola riga: qui la regola è al contrario, variabile a 0 → diretta, a 1 → negata. Per la riga 5 = 101: <span class="f">(<span class="ov"><var>A</var></span> + <var>B</var> + <span class="ov"><var>C</var></span>)</span> = M<sub>5</sub>.</p>
+        <p>La <strong>seconda forma canonica</strong> (prodotto di somme, PS) è il prodotto dei maxtermini delle righe in cui <var>F</var> = 0: <var>F</var> = Π<sub>M</sub>(0, 2, 4, 6, 7).</p>
+      </article>
+      <article class="note">
+        <h4>La mappa di Karnaugh</h4>
+        <p>È la tabella di verità ridisegnata a griglia, con 2<sup><var>n</var></sup> celle. Righe e colonne seguono il <strong>codice Gray</strong> (00, 01, 11, 10): due celle vicine differiscono per un solo bit, quindi possono essere semplificate con <span class="f"><var>X</var><var>Y</var> + <var>X</var><span class="ov"><var>Y</var></span> = <var>X</var></span>. Sono adiacenti anche le celle ai bordi opposti: la mappa si "arrotola" come un cilindro in entrambe le direzioni, e i quattro angoli di una mappa 4×4 formano un gruppo.</p>
+      </article>
+      <article class="note">
+        <h4>Regole per raggruppare</h4>
+        <ol>
+          <li>Ogni gruppo contiene 1, 2, 4, 8 o 16 celle (potenze di 2) ed è un rettangolo, anche a cavallo dei bordi.</li>
+          <li>I gruppi devono essere <strong>più grandi possibile</strong>: un gruppo di 2<sup><var>k</var></sup> celle elimina <var>k</var> variabili.</li>
+          <li>Devono essere <strong>meno possibile</strong>: ogni 1 va coperto, ma un gruppo che copre solo 1 già coperti è inutile.</li>
+          <li>I gruppi si possono sovrapporre.</li>
+          <li>Le celle <strong>X</strong> (indifferenze, <em>don't care</em>) si usano come 1 solo se ingrandiscono un gruppo.</li>
+        </ol>
+        <p><strong>Lettura di un gruppo</strong>: le variabili che nel gruppo cambiano valore spariscono; restano quelle costanti, dirette se valgono 1 e negate se valgono 0. Nella forma PS si raggruppano gli 0 e la lettura è al contrario.</p>
+      </article>
+      <article class="note">
+        <h4>Esempio svolto: <var>F</var> = Σ<sub>m</sub>(0, 2, 4, 5, 6)</h4>
+        <p>È l'esempio caricato nella mappa. Forma espansa, 5 mintermini e 15 letterali:</p>
+        <p class="f"><var>F</var> = <span class="ov"><var>A</var></span><span class="ov"><var>B</var></span><span class="ov"><var>C</var></span> + <span class="ov"><var>A</var></span><var>B</var><span class="ov"><var>C</var></span> + <var>A</var><span class="ov"><var>B</var></span><span class="ov"><var>C</var></span> + <var>A</var><span class="ov"><var>B</var></span><var>C</var> + <var>A</var><var>B</var><span class="ov"><var>C</var></span></p>
+        <ul>
+          <li>Gruppo da 4: m0, m2, m4, m6, tutta la colonna <var>C</var> = 0 (le colonne 00 e 10 sono adiacenti ai bordi) → <span class="f"><span class="ov"><var>C</var></span></span>.</li>
+          <li>Gruppo da 2: m4, m5, riga <var>A</var> = 1 con <var>B</var> = 0 → <span class="f"><var>A</var><span class="ov"><var>B</var></span></span>.</li>
+        </ul>
+        <p>Forma minima: <span class="f"><var>F</var> = <span class="ov"><var>C</var></span> + <var>A</var><span class="ov"><var>B</var></span></span>, 2 termini e 3 letterali. Con l'algebra: raccogli <span class="ov"><var>C</var></span> nei quattro mintermini che lo contengono (la parentesi vale 1), poi <span class="f"><span class="ov"><var>C</var></span> + <var>A</var><span class="ov"><var>B</var></span><var>C</var> = <span class="ov"><var>C</var></span> + <var>A</var><span class="ov"><var>B</var></span></span> per assorbimento.</p>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= SFIDE -->
+<section class="panel" id="sfide" role="tabpanel" aria-labelledby="tab-sfide" hidden>
+  <header class="panel-head">
+    <h2>Sfide</h2>
+    <p>Domande sempre diverse su tutto il programma. In allenamento vai al tuo ritmo e leggi la spiegazione; nella sfida a tempo hai 90 secondi per fare più punti possibile. Le risposte di fila valgono di più.</p>
+  </header>
+  <div class="panel-grid">
+    <div class="lab">
+      <div class="scoreboard">
+        <div class="score"><span class="label">Punti</span><b id="qz-score">0</b></div>
+        <div class="score"><span class="label">Di fila</span><b id="qz-streak">0</b></div>
+        <div class="score"><span class="label">Giuste</span><b id="qz-ratio">0/0</b></div>
+        <div class="score"><span class="label">Record a tempo</span><b id="qz-best">0</b></div>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <div class="seg" id="qz-topic" role="group" aria-label="Argomenti">
+          <button type="button" data-t="all" aria-pressed="true">Tutto</button>
+          <button type="button" data-t="ele" aria-pressed="false">Elettrotecnica</button>
+          <button type="button" data-t="dig" aria-pressed="false">Digitale</button>
+        </div>
+        <button class="btn" type="button" id="qz-start">Sfida a tempo (90 s)</button>
+      </div>
+      <div class="timer" id="qz-timer" hidden>
+        <div class="row" style="justify-content:space-between"><span class="label">Tempo</span><b class="mono" id="qz-time">90 s</b></div>
+        <div class="timer-bar"><span id="qz-bar"></span></div>
+      </div>
+      <div class="card quiz-card">
+        <span class="tag" id="qz-tag"></span>
+        <p class="quiz-q" id="qz-q"></p>
+        <div class="choices" id="qz-choices"></div>
+        <div class="answer-row" id="qz-answer" hidden>
+          <input class="input" id="qz-in" autocomplete="off" spellcheck="false" aria-label="Risposta">
+          <span class="unit" id="qz-unit"></span>
+          <button class="btn" type="button" id="qz-check">Verifica</button>
+        </div>
+        <div class="feedback" id="qz-fb" aria-live="polite"></div>
+        <div class="row"><button class="btn" type="button" id="qz-next" hidden>Prossima domanda</button></div>
+      </div>
+    </div>
+    <aside class="notes" aria-label="Come funzionano le sfide">
+      <header><h3>Come si gioca</h3></header>
+      <article class="note">
+        <h4>Punti e livelli</h4>
+        <ul>
+          <li>Ogni risposta giusta vale 10 punti, più 2 per ogni risposta di fila (fino a +10).</li>
+          <li>Le risposte giuste danno anche punti esperienza (XP), come le missioni e i giochi delle altre schede.</li>
+          <li>Livelli: Principiante, Apprendista, Tecnico, Perito, Progettista, Ingegnere.</li>
+          <li>Il progresso resta salvato in questo browser.</li>
+        </ul>
+      </article>
+      <article class="note">
+        <h4>Come scrivere le risposte</h4>
+        <ul>
+          <li>Numeri: la virgola va bene (<span class="mono">12,5</span>). Usa l'unità indicata accanto alla casella: se chiede mA, scrivi i milliampere.</li>
+          <li>I risultati entro il 2 % sono considerati giusti, così gli arrotondamenti non ti penalizzano.</li>
+          <li>Binario: solo 0 e 1, senza spazi. In complemento a 2 scrivi tutti gli 8 bit.</li>
+          <li>Esadecimale: cifre 0–9 e lettere A–F.</li>
+        </ul>
+      </article>
+      <article class="note">
+        <h4>Un metodo per i problemi</h4>
+        <ol>
+          <li>Scrivi i dati con le unità e converti i multipli (mA → A, kΩ → Ω).</li>
+          <li>Scegli la formula e ricava l'incognita prima di mettere i numeri.</li>
+          <li>Controlla l'ordine di grandezza: una corrente di 300 A in un circuito a pile è sospetta.</li>
+        </ol>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================= FORMULARIO -->
+<section class="panel" id="formulario" role="tabpanel" aria-labelledby="tab-formulario" hidden>
+  <header class="panel-head">
+    <h2>Formulario</h2>
+    <p>Tutte le formule in un posto, con le unità di misura.</p>
+  </header>
+  <div class="formulario">
+    <div class="card">
+      <h3>Grandezze elettriche</h3>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Grandezza</th><th>Simbolo</th><th>Unità</th></tr></thead>
+        <tbody>
+          <tr><td>Carica elettrica</td><td class="f"><var>Q</var></td><td>coulomb [C]</td></tr>
+          <tr><td>Intensità di corrente</td><td class="f"><var>I</var></td><td>ampere [A]</td></tr>
+          <tr><td>Tensione, ddp</td><td class="f"><var>V</var></td><td>volt [V]</td></tr>
+          <tr><td>Forza elettromotrice</td><td class="f"><var>E</var></td><td>volt [V]</td></tr>
+          <tr><td>Resistenza</td><td class="f"><var>R</var></td><td>ohm [Ω]</td></tr>
+          <tr><td>Conduttanza</td><td class="f"><var>G</var></td><td>siemens [S]</td></tr>
+          <tr><td>Resistività</td><td class="f">ρ</td><td>Ω·mm²/m (o Ω·m)</td></tr>
+          <tr><td>Potenza</td><td class="f"><var>P</var></td><td>watt [W]</td></tr>
+          <tr><td>Energia, lavoro</td><td class="f"><var>W</var>, <var>L</var></td><td>joule [J], kWh</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Multipli e sottomultipli</h3>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Prefisso</th><th>Simbolo</th><th>Fattore</th><th>Esempio</th></tr></thead>
+        <tbody>
+          <tr><td>giga</td><td>G</td><td>10⁹</td><td>1 GΩ</td></tr>
+          <tr><td>mega</td><td>M</td><td>10⁶</td><td>2,2 MΩ</td></tr>
+          <tr><td>kilo</td><td>k</td><td>10³</td><td>4,7 kΩ = 4700 Ω</td></tr>
+          <tr><td>milli</td><td>m</td><td>10⁻³</td><td>20 mA = 0,02 A</td></tr>
+          <tr><td>micro</td><td>µ</td><td>10⁻⁶</td><td>100 µA = 0,1 mA</td></tr>
+          <tr><td>nano</td><td>n</td><td>10⁻⁹</td><td>10 nF</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Leggi fondamentali</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Corrente</td><td class="f"><var>I</var> = <var>Q</var> / <var>t</var></td></tr>
+          <tr><td>Tensione</td><td class="f"><var>V</var> = <var>L</var> / <var>Q</var></td></tr>
+          <tr><td>1ª legge di Ohm</td><td class="f"><var>V</var> = <var>R</var>·<var>I</var>, <var>I</var> = <var>V</var>/<var>R</var>, <var>R</var> = <var>V</var>/<var>I</var></td></tr>
+          <tr><td>2ª legge di Ohm</td><td class="f"><var>R</var> = ρ·<var>L</var>/<var>S</var></td></tr>
+          <tr><td>Temperatura</td><td class="f"><var>R</var><sub><var>t</var></sub> = <var>R</var><sub>20</sub>(1 + α(<var>t</var> − 20))</td></tr>
+          <tr><td>Conduttanza</td><td class="f"><var>G</var> = 1/<var>R</var></td></tr>
+          <tr><td>Generatore reale</td><td class="f"><var>V</var> = <var>E</var> − <var>r</var>·<var>I</var></td></tr>
+          <tr><td>Circuito completo</td><td class="f"><var>I</var> = <var>E</var>/(<var>R</var> + <var>r</var>)</td></tr>
+          <tr><td>Cortocircuito</td><td class="f"><var>I</var><sub>cc</sub> = <var>E</var>/<var>r</var></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Potenza ed energia</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Potenza</td><td class="f"><var>P</var> = <var>V</var>·<var>I</var> = <var>R</var>·<var>I</var>² = <var>V</var>²/<var>R</var></td></tr>
+          <tr><td>Energia</td><td class="f"><var>W</var> = <var>P</var>·<var>t</var></td></tr>
+          <tr><td>Kilowattora</td><td class="f">1 kWh = 3,6·10⁶ J</td></tr>
+          <tr><td>Rendimento</td><td class="f">η = <var>P</var><sub>u</sub>/<var>P</var><sub>ass</sub> = <var>V</var>/<var>E</var></td></tr>
+          <tr><td>Max trasferimento</td><td class="f"><var>R</var> = <var>r</var> → <var>P</var><sub>max</sub> = <var>E</var>²/(4<var>r</var>)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Reti</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Serie</td><td class="f"><var>R</var><sub>eq</sub> = Σ <var>R</var><sub><var>k</var></sub></td></tr>
+          <tr><td>Parallelo</td><td class="f">1/<var>R</var><sub>eq</sub> = Σ 1/<var>R</var><sub><var>k</var></sub></td></tr>
+          <tr><td>Due in parallelo</td><td class="f"><var>R</var><sub>1</sub><var>R</var><sub>2</sub>/(<var>R</var><sub>1</sub> + <var>R</var><sub>2</sub>)</td></tr>
+          <tr><td>Partitore di tensione</td><td class="f"><var>V</var><sub><var>k</var></sub> = <var>E</var>·<var>R</var><sub><var>k</var></sub>/<var>R</var><sub>eq</sub></td></tr>
+          <tr><td>Partitore di corrente</td><td class="f"><var>I</var><sub>1</sub> = <var>I</var>·<var>R</var><sub>2</sub>/(<var>R</var><sub>1</sub> + <var>R</var><sub>2</sub>)</td></tr>
+          <tr><td>LKC (nodi)</td><td class="f">Σ <var>I</var><sub>entr</sub> = Σ <var>I</var><sub>usc</sub></td></tr>
+          <tr><td>LKT (maglie)</td><td class="f">Σ <var>E</var> = Σ <var>R</var>·<var>I</var></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Numerazione</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Valore posizionale</td><td class="f"><var>N</var> = Σ <var>c</var><sub><var>i</var></sub>·<var>b</var><sup><var>i</var></sup></td></tr>
+          <tr><td><var>n</var> bit, senza segno</td><td class="f">0 … 2<sup><var>n</var></sup> − 1</td></tr>
+          <tr><td><var>n</var> bit, complemento a 2</td><td class="f">−2<sup><var>n</var>−1</sup> … 2<sup><var>n</var>−1</sup> − 1</td></tr>
+          <tr><td>Complemento a 2</td><td>inverti i bit e aggiungi 1</td></tr>
+          <tr><td>Hex ↔ binario</td><td>1 cifra = 4 bit</td></tr>
+          <tr><td>Ottale ↔ binario</td><td>1 cifra = 3 bit</td></tr>
+          <tr><td>BCD</td><td>ogni cifra decimale in 4 bit</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Algebra di Boole</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Complemento</td><td class="f"><var>A</var> + <span class="ov"><var>A</var></span> = 1, <var>A</var>·<span class="ov"><var>A</var></span> = 0</td></tr>
+          <tr><td>Assorbimento</td><td class="f"><var>A</var> + <var>A</var><var>B</var> = <var>A</var></td></tr>
+          <tr><td>Semplificazione</td><td class="f"><var>A</var> + <span class="ov"><var>A</var></span><var>B</var> = <var>A</var> + <var>B</var></td></tr>
+          <tr><td>Adiacenza</td><td class="f"><var>A</var><var>B</var> + <var>A</var><span class="ov"><var>B</var></span> = <var>A</var></td></tr>
+          <tr><td>De Morgan</td><td class="f"><span class="ov"><var>A</var><var>B</var></span> = <span class="ov"><var>A</var></span> + <span class="ov"><var>B</var></span>; <span class="ov"><var>A</var> + <var>B</var></span> = <span class="ov"><var>A</var></span><span class="ov"><var>B</var></span></td></tr>
+          <tr><td>XOR</td><td class="f"><var>A</var> ⊕ <var>B</var> = <span class="ov"><var>A</var></span><var>B</var> + <var>A</var><span class="ov"><var>B</var></span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Mappe di Karnaugh</h3>
+      <div class="table-wrap"><table class="tbl">
+        <tbody>
+          <tr><td>Celle</td><td>2<sup><var>n</var></sup> con <var>n</var> variabili</td></tr>
+          <tr><td>Ordine</td><td>codice Gray: 00, 01, 11, 10</td></tr>
+          <tr><td>Gruppi</td><td>1, 2, 4, 8, 16 celle, rettangolari, anche sui bordi</td></tr>
+          <tr><td>Semplificazione</td><td>2<sup><var>k</var></sup> celle eliminano <var>k</var> variabili</td></tr>
+          <tr><td>Lettura SP</td><td>gruppi di 1: 1 → diretta, 0 → negata</td></tr>
+          <tr><td>Lettura PS</td><td>gruppi di 0: 0 → diretta, 1 → negata</td></tr>
+          <tr><td>Indifferenze X</td><td>usale solo se ingrandiscono un gruppo</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">Da Ohm a Karnaugh · ripasso per istituti tecnici, indirizzo elettronica ed elettrotecnica. Funziona anche offline: apri <span class="mono">index.html</span> nel browser.</div>
+</footer>
+
+<script src="js/core.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/circuit.js"></script>
+<script src="js/resistors.js"></script>
+<script src="js/networks.js"></script>
+<script src="js/binary.js"></script>
+<script src="js/gates.js"></script>
+<script src="js/karnaugh.js"></script>
+<script src="js/quiz.js"></script>
+</body>
+</html>
