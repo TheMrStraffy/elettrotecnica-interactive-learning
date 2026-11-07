@@ -321,6 +321,39 @@
 
   function groupSize(imp) { return 1 << popcount(imp.mask); }
 
+  // ---------- Circuiti combinatori integrati ----------
+
+  /** Sommatore ripple-carry a n bit: carries[k] è il riporto che entra nel bit k (carries[n] = riporto finale). */
+  function rippleAdd(a, b, n, cin = 0) {
+    const carries = [cin & 1];
+    let sum = 0;
+    for (let k = 0; k < n; k++) {
+      const x = (a >> k) & 1, y = (b >> k) & 1, c = carries[k];
+      sum |= (x ^ y ^ c) << k;
+      carries.push((x & y) | (c & (x ^ y)));
+    }
+    const sign = 1 << (n - 1);
+    const overflow = ((a & sign) === (b & sign)) && ((sum & sign) !== (a & sign));
+    return { sum, carries, cout: carries[n], overflow };
+  }
+
+  /** Uscite di un decoder n → 2ⁿ (attive alte): solo quella di indice code vale 1. */
+  function decoderOut(n, code, enable = true) {
+    return Array.from({ length: 1 << n }, (_, k) => (enable && k === code ? 1 : 0));
+  }
+
+  const muxOut = (data, sel) => data[sel];
+
+  /** Encoder a priorità: indice dell'ingresso attivo più alto, -1 se nessuno. */
+  function priorityEncode(inputs) {
+    for (let k = inputs.length - 1; k >= 0; k--) if (inputs[k]) return k;
+    return -1;
+  }
+
+  // Display a 7 segmenti (catodo comune, 1 = acceso), versione con le "code" su 6 e 9
+  const SEG7 = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
+  const segMinterms = (seg) => Object.keys(SEG7).map(Number).filter((d) => SEG7[d].includes(seg));
+
   const api = {
     VARS,
     popcount,
@@ -345,6 +378,12 @@
     kmapLayout,
     kmapIndex,
     groupSize,
+    rippleAdd,
+    decoderOut,
+    muxOut,
+    priorityEncode,
+    SEG7,
+    segMinterms,
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

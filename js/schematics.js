@@ -329,5 +329,85 @@
     return frame(570, 250, 'Triangolo e stella equivalente', s);
   };
 
-  App.Schem = { T, nm };
+
+  // ---------- Condensatori, induttori, deviatore ----------
+  const fmtC = (v) => (v == null ? null : typeof v === 'string' ? v : si(v, 'F'));
+  const fmtL = (v) => (v == null ? null : typeof v === 'string' ? v : si(v, 'H'));
+
+  /** Condensatore su un filo orizzontale: occupa da cx−28 a cx+28 come un resistore. */
+  function capH(cx, cy, name, val, o = {}) {
+    const g = 5;
+    return wire(`M${cx - 28} ${cy} H${cx - g} M${cx + g} ${cy} H${cx + 28}`) +
+      `<path class="plate" d="M${cx - g} ${cy - 14} V${cy + 14} M${cx + g} ${cy - 14} V${cy + 14}"/>` +
+      `<text x="${cx}" y="${cy - 20}" text-anchor="middle">${nm(name)}</text>` +
+      (val != null ? `<text class="val" x="${cx}" y="${cy + 30}" text-anchor="middle">${fmtC(val)}</text>` : '') +
+      (o.extra ? `<text class="vlbl" x="${cx}" y="${cy + 46}" text-anchor="middle">${o.extra}</text>` : '');
+  }
+
+  /** Condensatore su un filo verticale: da cy−28 a cy+28. */
+  function capV(cx, cy, name, val, o = {}) {
+    const g = 5;
+    const left = o.side === 'left';
+    return wire(`M${cx} ${cy - 28} V${cy - g} M${cx} ${cy + g} V${cy + 28}`) +
+      `<path class="plate${o.hl ? ' hl' : ''}" d="M${cx - 14} ${cy - g} H${cx + 14} M${cx - 14} ${cy + g} H${cx + 14}"/>` +
+      (o.pol ? `<text class="pm" x="${cx - 20}" y="${cy - 8}" text-anchor="middle">+</text>` : '') +
+      label(left ? cx - 22 : cx + 22, cy - 4, name, fmtC(val), left ? 'end' : 'start') +
+      (o.extra ? `<text class="vlbl" x="${left ? cx - 22 : cx + 22}" y="${cy + 30}" text-anchor="${left ? 'end' : 'start'}">${o.extra}</text>` : '');
+  }
+
+  /** Induttore su un filo verticale: quattro spire da cy−20 a cy+20. */
+  function indV(cx, cy, name, val, o = {}) {
+    const left = o.side === 'left';
+    let d = `M${cx} ${cy - 20}`;
+    for (let k = 0; k < 4; k++) d += ' a5 5 0 0 1 0 10';
+    return wire(`M${cx} ${cy - 28} V${cy - 20} M${cx} ${cy + 20} V${cy + 28}`) + `<path class="coil" d="${d}"/>` +
+      label(left ? cx - 16 : cx + 16, cy - 4, name, fmtL(val), left ? 'end' : 'start') +
+      (o.extra ? `<text class="vlbl" x="${left ? cx - 16 : cx + 16}" y="${cy + 30}" text-anchor="${left ? 'end' : 'start'}">${o.extra}</text>` : '');
+  }
+
+  /** Circuito RC (o RL) con deviatore: posizione 1 = carica dal generatore, 2 = scarica a massa. */
+  T.rc = (p, o = {}) => {
+    const isL = o.kind === 'L';
+    const pos = o.pos === 2 ? 2 : 1;
+    let s = wire('M70 122 V50 H200 M214 96 V230 M70 158 V230 H470 M256 50 H292 M348 50 H470 V112 M470 168 V230');
+    s += gen(70, 140, 'E', p.E) + resH(320, 50, 'R', p.R);
+    s += isL ? indV(470, 140, 'L', p.L, { extra: o.v || '' }) : capV(470, 140, 'C', p.C, { extra: o.v || '' });
+    s += term(200, 50) + term(214, 92) + term(256, 50);
+    s += pos === 1 ? `<line class="wire" x1="256" y1="50" x2="204" y2="50"/>` : `<line class="wire" x1="256" y1="50" x2="217" y2="89"/>`;
+    s += `<text class="small" x="196" y="34" text-anchor="middle">1 · carica</text><text class="small" x="226" y="118">2 · ${isL ? 'corto' : 'scarica'}</text>`;
+    s += ground(300, 230);
+    if (o.i != null || o.arrows) s += arrow(410, 50, o.i != null && o.i < 0 ? 'l' : 'r', 'i', o.i != null ? Math.abs(o.i) : null);
+    return frame(612, 262, isL ? 'Circuito RL con deviatore' : 'Circuito RC con deviatore', s);
+  };
+
+  /** Reti di condensatori: kind = par | ser | mix (C1 in serie al parallelo C2 // C3). */
+  T.capNet = (p, o = {}) => {
+    const n = p.C.length;
+    const ex = (k) => (o.extra ? o.extra[k] : '');
+    let s = gen(70, 140, 'E', p.E);
+    if (p.kind === 'par') {
+      const xs = n === 3 ? [210, 340, 470] : [250, 430];
+      const last = xs[xs.length - 1];
+      s += wire(`M70 122 V45 H${last} M70 158 V235 H${last}`);
+      xs.forEach((x, k) => {
+        s += wire(`M${x} 45 V112 M${x} 168 V235`) + capV(x, 140, 'C_' + (k + 1), p.C[k], { extra: ex(k) });
+        if (k < xs.length - 1) s += dot(x, 45) + dot(x, 235);
+      });
+    } else if (p.kind === 'ser') {
+      const hx = n === 3 ? [190, 340] : [260];
+      let d = 'M70 122 V50';
+      hx.forEach((cx) => { d += ` H${cx - 28} M${cx + 28} 50`; });
+      d += ' H470 V112 M470 168 V235 H70 V158';
+      s += wire(d);
+      hx.forEach((cx, k) => { s += capH(cx, 50, 'C_' + (k + 1), p.C[k], { extra: ex(k) }); });
+      s += capV(470, 140, 'C_' + n, p.C[n - 1], { extra: ex(n - 1) });
+    } else {
+      s += wire('M70 122 V50 H162 M218 50 H440 V112 M300 50 V112 M300 168 V235 M440 168 V235 H70 V158');
+      s += capH(190, 50, 'C_1', p.C[0], { extra: ex(0) }) + capV(300, 140, 'C_2', p.C[1], { extra: ex(1) }) + capV(440, 140, 'C_3', p.C[2], { extra: ex(2) });
+      s += dot(300, 50) + dot(300, 235) + nodeLbl(300, 36, 'A');
+    }
+    return frame(612, 262, 'Rete di condensatori', s);
+  };
+
+  App.Schem = { T, nm, capV, capH, indV };
 })();

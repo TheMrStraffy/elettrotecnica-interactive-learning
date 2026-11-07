@@ -40,7 +40,37 @@
     return { state: 'bad' };
   }
 
-  const fmtAns = (ask) => (ask.type === 'choice' ? ask.options[ask.answer] : App.num(ask.value, 4) + (ask.unit ? ' ' + ask.unit : ''));
+  const fmtAns = (ask) => (ask.type === 'choice' ? ask.options[ask.answer] : ask.type === 'expr' ? ask.answerHTML : ask.type === 'text' ? '<span class="mono">' + (ask.answerHTML || ask.answer) + '</span>' : App.num(ask.value, 4) + (ask.unit ? '\u00A0' + ask.unit : ''));
+
+  /** Risposta testuale: sequenza di bit (fmt 'bits') o insieme di lettere (fmt 'set', es. segmenti accesi). */
+  function checkText(ask, raw) {
+    const s = String(raw).replace(/[\s_.,;:\-]+/g, '').toLowerCase();
+    if (!s) return { state: 'empty' };
+    if (ask.fmt === 'bits') {
+      if (!/^[01]+$/.test(s)) return { state: 'format', msg: 'Usa solo le cifre 0 e 1.' };
+      if (ask.exact) return { state: s === String(ask.answer) ? 'ok' : s.length !== String(ask.answer).length ? 'len' : 'bad' };
+      const z = (x) => x.replace(/^0+(?=.)/, '');
+      return { state: z(s) === z(String(ask.answer)) ? 'ok' : 'bad' };
+    }
+    const alpha = ask.alphabet || 'abcdefg';
+    if ([...s].some((c) => !alpha.includes(c))) return { state: 'format', msg: 'Usa solo le lettere ' + alpha.split('').join(', ') + '.' };
+    const norm = (x) => [...new Set(x)].sort().join('');
+    return { state: norm(s) === norm(String(ask.answer).toLowerCase()) ? 'ok' : 'bad' };
+  }
+
+  /** Domanda con espressione booleana: equivalente e minima (somma di prodotti). */
+  function checkExpr(ask, raw) {
+    const Lg = window.Logic;
+    if (!String(raw).trim()) return { state: 'empty' };
+    let t;
+    try { t = Lg.parse(raw, ask.n); } catch (e) { return { state: 'format', msg: e.message }; }
+    if (Lg.mismatches(t, ask.n, ask.outputs).length) return { state: 'bad' };
+    const shape = Lg.sopShape(t);
+    const res = Lg.analyze(ask.n, ask.outputs);
+    const lits = res.sop.reduce((s, p) => s + Lg.literalCount(ask.n, p), 0);
+    if (!shape || shape.terms > res.sop.length || shape.literals > lits) return { state: 'notmin' };
+    return { state: 'ok' };
+  }
 
   // ---------- Tabella R, I, V, P ----------
   /** rows: [{ name, R, I, V, P, note }] — valori numerici; I e V in valore assoluto. */
@@ -120,9 +150,13 @@
 
     function askRow(a, i) {
       const field = a.type === 'choice'
-        ? `<select class="input ans" data-i="${i}" id="${fam.id}-a${i}"><option value="">scegli…</option>${a.options.map((o, k) => `<option value="${k}">${o}</option>`).join('')}</select>`
-        : `<input class="input ans" data-i="${i}" id="${fam.id}-a${i}" inputmode="decimal" autocomplete="off" spellcheck="false">`;
-      return `<div class="ask"><label for="${fam.id}-a${i}">${a.label}</label><div class="ask-in">${field}<span class="unit">${a.type === 'choice' ? '' : a.unit || ''}</span><span class="mark" aria-live="polite"></span></div></div>`;
+        ? `<select class="input ans" data-i="${i}" id="${fam.id}-a${i}"><option value="">scegli…</option>${a.options.map((o, k) => `<option value="${k}">${o.replace(/<[^>]+>/g, '')}</option>`).join('')}</select>`
+        : a.type === 'expr'
+          ? `<input class="input ans expr-in" data-i="${i}" id="${fam.id}-a${i}" autocomplete="off" spellcheck="false" placeholder="es. A'B + CD'">`
+          : a.type === 'text'
+            ? `<input class="input ans text-in mono" data-i="${i}" id="${fam.id}-a${i}" autocomplete="off" spellcheck="false" autocapitalize="off"${a.fmt === 'bits' ? ' inputmode="numeric"' : ''} placeholder="${a.ph || (a.fmt === 'bits' ? 'es. 0110' : 'es. a, b, c')}">`
+            : `<input class="input ans" data-i="${i}" id="${fam.id}-a${i}" inputmode="decimal" autocomplete="off" spellcheck="false">`;
+      return `<div class="ask${a.type === 'expr' ? ' wide' : ''}"><label for="${fam.id}-a${i}">${a.label}</label><div class="ask-in">${field}<span class="unit">${a.type === 'choice' || a.type === 'expr' || a.type === 'text' ? '' : a.unit || ''}</span><span class="mark" aria-live="polite"></span></div></div>`;
     }
 
     function verify() {
@@ -134,6 +168,8 @@
         const mark = inp.parentElement.querySelector('.mark');
         let res;
         if (a.type === 'choice') res = inp.value === '' ? { state: 'empty' } : { state: Number(inp.value) === a.answer ? 'ok' : 'bad' };
+        else if (a.type === 'expr') res = checkExpr(a, inp.value);
+        else if (a.type === 'text') res = checkText(a, inp.value);
         else res = checkNum(a, inp.value);
         inp.classList.remove('good', 'invalid');
         mark.textContent = '';
@@ -142,9 +178,11 @@
         else {
           inp.classList.add('invalid');
           mark.textContent = '✗';
-          if (res.state === 'sign') notes.add('Controlla il segno: una corrente negativa scorre al contrario della freccia, ma va scritta con il meno.');
+          if (res.state === 'sign') notes.add(a.signNote || 'Controlla il segno: una corrente negativa scorre al contrario della freccia, ma va scritta con il meno.');
+          if (res.state === 'len') notes.add('Scrivi tutti i bit richiesti, zeri a sinistra compresi.');
           if (res.state === 'unit') notes.add('Un valore ha il numero giusto ma è nell\'unità sbagliata: guarda l\'unità accanto alla casella.');
-          if (res.state === 'format') notes.add('Scrivi solo il numero, nell\'unità indicata accanto alla casella.');
+          if (res.state === 'format') notes.add(a.type === 'expr' ? 'Non riesco a leggere l\'espressione: ' + (res.msg || '') + ' Negazione con l\'apostrofo (A\') o con ! davanti.' : a.type === 'text' ? res.msg : 'Scrivi solo il numero, nell\'unità indicata accanto alla casella.');
+          if (res.state === 'notmin') notes.add('L\'espressione è equivalente ma non è la forma minima SP: cerca gruppi più grandi.');
         }
       });
       if (ok === asks.length) {
@@ -227,5 +265,5 @@
   const res = (x) => `<span class="res">${x}</span>`;
   const ok = ' <span class="check">✓</span>';
 
-  App.Lessons = { exerciseCard, exampleCard, rivp, rivpFromNet, nice, checkNum, fmt: { N, U, V, frac, step, res, ok, name } };
+  App.Lessons = { exerciseCard, exampleCard, rivp, rivpFromNet, nice, checkNum, checkText, fmt: { N, U, V, frac, step, res, ok, name } };
 })();
