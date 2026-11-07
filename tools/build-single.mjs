@@ -10,7 +10,7 @@ const read = (p) => readFileSync(join(root, p), 'utf8');
 
 let html = read('index.html');
 html = html.replace(/<link rel="stylesheet" href="css\/style\.css">/, () => `<style>\n${read('css/style.css')}\n</style>`);
-html = html.replace(/<script src="(js\/[\w-]+\.js)"><\/script>/g, (_, src) => `<script>\n${read(src)}\n</script>`);
+html = html.replace(/<script src="(js\/[\w\/-]+\.js)"><\/script>/g, (_, src) => `<script>\n${read(src)}\n</script>`);
 
 const args = process.argv.slice(2);
 let out = join(root, 'dist', 'da-ohm-a-karnaugh.html');
