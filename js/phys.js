@@ -124,7 +124,28 @@
     return { ex, ey };
   }
 
-  const api = { BASE, UNITS, dims, sameDims, baseString, unitOf, sup, sci, eng, prefixOf, sigCount, roundSig, order, solve2, solveLinear, K, QE, coulomb, fieldPoint, fieldAt };
+  // ---------- Condensatori e transitori ----------
+  const EPS0 = 8.854e-12; // F/m
+  const MU0 = 4 * Math.PI * 1e-7; // H/m
+  const capPlane = (S, d, er = 1) => (EPS0 * er * S) / d;
+  const capSeries = (...cs) => 1 / cs.reduce((a, c) => a + 1 / c, 0);
+  const capParallel = (...cs) => cs.reduce((a, c) => a + c, 0);
+  const charge = (E, tau, t) => E * (1 - Math.exp(-t / tau));
+  const discharge = (V0, tau, t) => V0 * Math.exp(-t / tau);
+  const timeToCharge = (E, tau, V) => -tau * Math.log(1 - V / E);
+  const timeToDischarge = (V0, tau, V) => -tau * Math.log(V / V0);
+
+  // ---------- Magnetismo ----------
+  const bWire = (I, r) => (MU0 * I) / (2 * Math.PI * r);
+  const bSolenoid = (N, I, l, mur = 1) => (MU0 * mur * N * I) / l;
+  const lSolenoid = (N, S, l, mur = 1) => (MU0 * mur * N * N * S) / l;
+  const rad = (deg) => (deg * Math.PI) / 180;
+  const forceWire = (B, I, L, deg = 90) => B * I * L * Math.sin(rad(deg));
+  const forceParallel = (I1, I2, d, L = 1) => (MU0 * I1 * I2 * L) / (2 * Math.PI * d);
+  /** Flusso: alfa è l'angolo tra B e la normale alla superficie. */
+  const flux = (B, S, deg = 0) => B * S * Math.cos(rad(deg));
+
+  const api = { EPS0, MU0, capPlane, capSeries, capParallel, charge, discharge, timeToCharge, timeToDischarge, bWire, bSolenoid, lSolenoid, forceWire, forceParallel, flux, BASE, UNITS, dims, sameDims, baseString, unitOf, sup, sci, eng, prefixOf, sigCount, roundSig, order, solve2, solveLinear, K, QE, coulomb, fieldPoint, fieldAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Phys = api;
 })(typeof window !== 'undefined' ? window : globalThis);

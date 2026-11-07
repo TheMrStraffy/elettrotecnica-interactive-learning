@@ -17,15 +17,15 @@
       ],
     },
     {
-      n: '3ª', title: 'Terzo anno', sub: 'Reti in corrente continua, elettronica digitale',
+      n: '3ª', title: 'Terzo anno', sub: 'Reti in corrente continua, condensatori e induttori, elettronica digitale',
       units: [
         { unit: 'cc' },
+        { unit: 'cap' },
+        { unit: 'mag' },
         { title: 'Sistemi di numerazione', desc: 'Binario, ottale, esadecimale, BCD, complemento a 2, somma e sottrazione con i riporti.', route: 'binario', kind: 'Laboratorio' },
         { title: 'Porte logiche e circuiti combinatori', desc: 'Le 7 porte con simboli ANSI e IEC, semisommatore, sommatore completo, multiplexer.', route: 'porte', kind: 'Laboratorio' },
         { title: 'Algebra di Boole e mappe di Karnaugh', desc: 'Tabella di verità, forme canoniche, forma minima, circuito AND-OR, allenamento.', route: 'karnaugh', kind: 'Laboratorio' },
-        { title: 'Condensatori e transitori RC', desc: 'Capacità, serie e parallelo di condensatori, carica e scarica, costante di tempo.', soon: 3 },
-        { title: 'Magnetismo e induttori', desc: 'Campo magnetico, induzione, induttanza, transitori RL.', soon: 3 },
-        { title: 'Circuiti combinatori integrati', desc: 'Decoder, encoder, multiplexer, comparatori, sommatori a più bit.', soon: 3 },
+        { unit: 'msi' },
       ],
     },
     {

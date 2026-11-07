@@ -78,3 +78,27 @@ test('Coulomb e campo', () => {
   const g = P.fieldAt([{ q: 1e-9, x: -0.05, y: 0 }, { q: -1e-9, x: 0.05, y: 0 }], 0, 0.1);
   assert.ok(Math.abs(g.ey) < 1e-9 && g.ex > 0);
 });
+
+test('condensatori e transitori', () => {
+  near(P.capPlane(1e-4, 1e-3, 1), 8.854e-13, 'condensatore piano 1 cm², 1 mm');
+  near(P.capSeries(2e-6, 2e-6), 1e-6, 'serie');
+  near(P.capParallel(1e-6, 2.2e-6), 3.2e-6, 'parallelo');
+  near(P.charge(10, 1, 1), 10 * (1 - Math.exp(-1)), 'carica a τ');
+  assert.ok(Math.abs(P.charge(1, 1, 1) - 0.632) < 0.001);
+  assert.ok(P.charge(1, 1, 5) > 0.99);
+  for (let k = 0; k < 200; k++) {
+    const E = 1 + Math.random() * 20, tau = 1e-3 + Math.random(), t = Math.random() * 3 * tau;
+    near(P.timeToCharge(E, tau, P.charge(E, tau, t)), t, 'inversa della carica');
+    near(P.timeToDischarge(E, tau, P.discharge(E, tau, t)), t, 'inversa della scarica');
+  }
+});
+
+test('magnetismo', () => {
+  near(P.bWire(1, 0.01), 2e-5, 'filo: 1 A a 1 cm = 20 µT');
+  near(P.bSolenoid(1000, 1, 0.1), 4 * Math.PI * 1e-7 * 1e4, 'solenoide');
+  near(P.lSolenoid(100, 1e-4, 0.1), (4 * Math.PI * 1e-7 * 1e4 * 1e-4) / 0.1, 'induttanza');
+  near(P.forceWire(0.5, 2, 0.1, 90), 0.1, 'forza sul filo');
+  near(P.forceWire(0.5, 2, 0.1, 30), 0.05, 'forza a 30°');
+  near(P.forceParallel(1, 1, 1), 2e-7, 'definizione storica dell\'ampere');
+  near(P.flux(0.2, 0.01, 60), 0.001, 'flusso');
+});

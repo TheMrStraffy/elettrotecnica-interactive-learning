@@ -21,7 +21,7 @@ La pagina iniziale è una mappa per anno. Le unità pronte si aprono; le altre s
 | Anno | Unità pronte | In arrivo |
 | --- | --- | --- |
 | 1ª–2ª | Il circuito elementare, Resistori e resistività, **Grandezze, unità e notazione scientifica**, **Formule inverse, equazioni e sistemi**, **Carica, campo e potenziale** | — |
-| 3ª | **Reti in corrente continua** (15 lezioni), Sistemi di numerazione, Porte logiche e circuiti, Algebra di Boole e Karnaugh | Condensatori e transitori RC, magnetismo e induttori, combinatori integrati |
+| 3ª | **Reti in corrente continua** (15 lezioni), **Condensatori e transitori RC**, **Magnetismo e induttori**, Sistemi di numerazione, Porte logiche e circuiti, Algebra di Boole e Karnaugh, **Circuiti combinatori integrati** | — |
 | 4ª | — | Corrente alternata, RLC, potenze, diodi, transistor, operazionali, logica sequenziale, filtri |
 | 5ª | — | Applicazioni degli operazionali, filtri attivi, oscillatori, conversione A/D e D/A, trasduttori, alimentatori, microcontrollori, controlli |
 
@@ -57,6 +57,18 @@ Tre unità da 4 lezioni, con lo stesso schema delle reti: un elemento interattiv
 | Formule inverse, equazioni e sistemi | Formule inverse (la formula rigirata un passo alla volta), proporzionalità (diretta, inversa, quadratica con il grafico e il tasto "raddoppia"), equazioni di primo grado (soluzione passo per passo), sistemi 2×2 (due rette con Cramer in diretta e il sistema di un circuito) |
 | Carica, campo e potenziale | Carica (quanti elettroni passano), legge di Coulomb (due cariche con le forze e la curva 1/r²), campo elettrico (mappa da toccare per leggere intensità e direzione), potenziale (la collina tra due armature, con carica positiva o elettrone) |
 
+### Terzo anno: condensatori, magnetismo, combinatori integrati
+
+Tre unità da 4 lezioni, ognuna con almeno un elemento interattivo. Ogni lezione propone lo stesso problema in più modi (dati diretti, problema rovesciato, lettura da un grafico o da una tabella) e domande concettuali.
+
+| Unità | Lezioni e interattivi |
+| --- | --- |
+| Condensatori e transitori RC | Capacità (condensatore piano con area, distanza, dielettrico e tensione), serie e parallelo (rete di condensatori con cariche e tensioni), carica (deviatore, curva di v<sub>C</sub> e i con il pulsante "Avvia"), scarica (tangente iniziale che incontra l'asse a τ) |
+| Magnetismo e induttori | Campo di un filo e di un solenoide (bussola e nucleo di ferro), forza su un filo e tra due fili, induzione (spira che ruota tra due poli: flusso e f.e.m.), induttori e transitorio RL |
+| Circuiti combinatori integrati | Decoder 3 → 8 (enable, uscite attive basse) ed encoder a priorità, multiplexer 4:1 (con la selezione che scorre: parallelo → seriale), sommatore-sottrattore a 4 bit con riporti e overflow, comparatore a 4 bit e decoder BCD → 7 segmenti con la mappa di Karnaugh di ogni segmento |
+
+Negli esercizi dei combinatori si risponde anche con sequenze di bit (`0110`), insiemi di segmenti (`a, b, g`) ed espressioni booleane, che vengono controllate: devono essere equivalenti e, dove richiesto, in forma minima.
+
 ### Le altre unità
 
 | Unità | Laboratorio |
@@ -81,8 +93,9 @@ js/dc.js              risolutore di reti in corrente continua e metodi delle lez
 js/schematics.js      schemi SVG dei circuiti
 js/units/cc-*.js      unità "Reti in corrente continua"
 js/units/b-*.js       unità del biennio (grandezze, algebra, elettrostatica)
-js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2, Coulomb e campo
-js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni
+js/units/t-*.js       unità del terzo anno (condensatori, magnetismo, combinatori integrati)
+js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2, Coulomb e campo, condensatori, magnetismo
+js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni, sommatori, decoder, display
 js/circuit.js …       laboratori (circuito, resistori, reti, binario, porte, Karnaugh, sfide)
 tests/                test dei motori di calcolo
 tools/                script per il file unico
@@ -98,4 +111,5 @@ npm test
 
 - Logica: la forma minima calcolata coincide con una ricerca esaustiva su tutte le 256 funzioni a 3 variabili e su 150 funzioni casuali a 4 variabili con indifferenze.
 - Biennio: analisi dimensionale delle unità SI, notazione scientifica e ingegneristica su 2000 valori casuali, cifre significative, sistemi 2×2 contro soluzioni note, Coulomb e campo di un dipolo.
+- Terzo anno: condensatore piano, serie e parallelo, carica e scarica con le formule inverse del tempo su 200 casi casuali; campo di filo e solenoide, induttanza, forze, flusso; sommatore a 4 bit su tutte le 512 combinazioni (somma, riporto, overflow = C4 ⊕ C3, sottrazione), decoder, multiplexer, encoder a priorità, segmenti del display.
 - Reti: il risolutore riproduce i risultati del documento; correnti di ramo, maglie, Millman, sovrapposizione e Thevenin danno lo stesso risultato del risolutore su 2000 circuiti casuali; stella-triangolo, Millman a tre rami e reti miste sono verificati allo stesso modo.

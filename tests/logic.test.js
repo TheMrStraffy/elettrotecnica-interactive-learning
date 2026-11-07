@@ -130,3 +130,27 @@ test('mappa di Karnaugh: codice Gray', () => {
   const lay3 = L.kmapLayout(3);
   assert.strictEqual(L.kmapIndex(lay3, 1, 2), 7);
 });
+
+test('circuiti combinatori integrati', () => {
+  const Lg_sub = (a, b) => L.rippleAdd(a, ~b & 15, 4, 1);
+  for (let a = 0; a < 16; a++) for (let b = 0; b < 16; b++) for (const cin of [0, 1]) {
+    const r = L.rippleAdd(a, b, 4, cin);
+    assert.strictEqual(r.sum + 16 * r.cout, a + b + cin);
+    const sa = a >= 8 ? a - 16 : a, sb = b >= 8 ? b - 16 : b;
+    const s = sa + sb + cin;
+    assert.strictEqual(r.overflow, s < -8 || s > 7, `overflow ${a}+${b}+${cin}`);
+    assert.strictEqual(r.overflow, (r.carries[4] ^ r.carries[3]) === 1, 'V = C4 xor C3');
+    // sottrazione A − B = A + not B + 1: stesso circuito, stesso overflow
+    const d = Lg_sub(a, b);
+    assert.strictEqual(d.sum, (a - b) & 15);
+    assert.strictEqual(d.cout, a >= b ? 1 : 0, 'C4 = 1 se non serve il prestito');
+  }
+  assert.deepStrictEqual(L.decoderOut(2, 2), [0, 0, 1, 0]);
+  assert.deepStrictEqual(L.decoderOut(2, 2, false), [0, 0, 0, 0]);
+  assert.strictEqual(L.muxOut([0, 1, 1, 0], 3), 0);
+  assert.strictEqual(L.priorityEncode([1, 0, 1, 0, 0, 1, 0, 0]), 5);
+  assert.strictEqual(L.priorityEncode([0, 0, 0]), -1);
+  assert.deepStrictEqual(L.segMinterms('a'), [0, 2, 3, 5, 6, 7, 8, 9]);
+  assert.deepStrictEqual(L.segMinterms('e'), [0, 2, 6, 8]);
+  assert.deepStrictEqual(L.segMinterms('g'), [2, 3, 4, 5, 6, 8, 9]);
+});

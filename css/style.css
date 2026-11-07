@@ -426,6 +426,9 @@ var, .f var { font-family: var(--f-math); font-style: italic; }
 
 .ov .ov { padding-top: 2px; }
 
+/* due negazioni vicine restano due barre distinte: A̅B̅ non è (AB)̅ */
+.ov + .ov { margin-left: 0.14em; }
+
 sub, sup { font-size: 0.68em; line-height: 0; }
 
 /* ---------- Controlli ---------- */
@@ -703,6 +706,8 @@ select.input { font-family: var(--f-body); }
   padding-bottom: 2px;
 }
 
+.steps .calc.prose { white-space: normal; }
+
 .steps .why { display: block; font-family: var(--f-body); font-size: 0.86rem; color: var(--ink-3); white-space: normal; }
 
 .res { color: var(--pen); font-weight: 600; }
@@ -794,9 +799,10 @@ select.input { font-family: var(--f-body); }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.86rem; color: var(--ink-2); }
 
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
+/* inline-block e non flex: altrimenti i pedici (v<sub>C</sub>) diventano elementi separati */
+.legend > span { display: inline-block; }
 
-.legend i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; vertical-align: middle; margin-right: 6px; }
 
 /* ---------- Tabelle ---------- */
 
@@ -972,6 +978,9 @@ table.tbl {
   border-right: 1.5px solid var(--line-strong);
   background: linear-gradient(to top right, transparent calc(50% - 0.7px), var(--line-strong) calc(50% - 0.7px), var(--line-strong) calc(50% + 0.7px), transparent calc(50% + 0.7px));
 }
+
+/* l'angolo deve avere spazio per le due etichette (righe e colonne) */
+.kmap .corner { min-width: 50px; min-height: 40px; }
 
 .kmap .corner .cv { position: absolute; right: 5px; top: 2px; }
 
@@ -1478,6 +1487,8 @@ a.unit-card:hover { border-color: var(--pen); transform: translateY(-1px); }
 
 .ex-fig svg { width: 100%; min-width: 420px; height: auto; display: block; }
 
+.ex-fig svg.seg7 { min-width: 0; }
+
 .ex-asks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px 16px; }
 
 .ask { display: grid; gap: 4px; }
@@ -1671,3 +1682,145 @@ a.unit-card:hover { border-color: var(--pen); transform: translateY(-1px); }
 .chart .probe-arrow { stroke: var(--bad); stroke-width: 3; }
 
 .field-map { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+
+/* ---------- 3ª: condensatori, induttori, magnetismo ---------- */
+
+.dcs .plate { fill: none; stroke: var(--wire); stroke-width: 3.2; stroke-linecap: round; }
+
+.dcs .plate.hl { stroke: var(--pen); }
+
+.dcs .coil { fill: none; stroke: var(--wire); stroke-width: 2.4; stroke-linecap: round; }
+
+.dcs .vlbl { font-family: var(--f-mono); font-size: 12px; fill: var(--g3); }
+
+.dcs .vlbl .sb { font-family: var(--f-mono); font-size: 9.5px; }
+
+.chart .qsign { font-family: var(--f-mono); font-size: 15px; font-weight: 700; }
+
+.chart .qsign.pos { fill: var(--bad); }
+
+.chart .qsign.neg { fill: var(--pen); }
+
+.chart .fline { fill: none; stroke: var(--ink-3); stroke-width: 1.4; }
+
+.chart .fhead2 { fill: var(--ink-3); }
+
+.chart .wirex { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+
+.chart .turn { fill: none; stroke: var(--energy); stroke-width: 2.5; }
+
+.ask.wide { grid-column: 1 / -1; }
+
+.ask-in .input.expr-in { max-width: 320px; }
+
+.ask-in .input.text-in { max-width: 200px; letter-spacing: 0.06em; }
+
+/* ---------- 3ª: circuiti combinatori integrati ---------- */
+
+svg.msi { display: block; width: 100%; height: auto; margin-inline: auto; }
+
+.msi text { font-family: var(--f-mono); }
+
+.msi .chip, .msi .fa { fill: var(--surface-2); stroke: var(--ink); stroke-width: 2; }
+
+.msi .cname { font-size: 13px; font-weight: 700; fill: var(--ink); }
+
+.msi .csub { font-size: 11px; fill: var(--ink-3); }
+
+.msi .pin { stroke: var(--ink-3); stroke-width: 2; }
+
+.msi .pin.on { stroke: var(--pen); stroke-width: 3; }
+
+.msi .plbl { font-size: 12px; fill: var(--ink); }
+
+.msi .plbl.ovl { text-decoration: overline; }
+
+.msi .pval, .msi .cv { font-size: 13px; font-weight: 700; fill: var(--ink-3); }
+
+.msi .cv { font-size: 11.5px; }
+
+.msi .pval.on, .msi .cv.on { fill: var(--pen); }
+
+.msi .wn { font-size: 11px; fill: var(--ink-3); }
+
+.msi .sb { font-size: 8.5px; }
+
+.msi .bub, .msi .xor { fill: var(--surface); stroke: var(--ink); stroke-width: 1.6; }
+
+.msi path.xor { fill: none; }
+
+.msi .ahead { fill: var(--ink-3); }
+
+.msi .led circle { fill: var(--surface-3); stroke: var(--ink-2); stroke-width: 1.5; }
+
+.msi .led.on circle { fill: var(--energy); stroke: var(--energy); filter: drop-shadow(0 0 5px var(--energy)); }
+
+.msi .contact { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.5; }
+
+.msi .contact.on { fill: var(--pen); stroke: var(--pen); }
+
+.msi .wiper { stroke: var(--pen); stroke-width: 3; stroke-linecap: round; }
+
+/* il display è un oggetto fisico: stessi colori nei due temi */
+.seg7 .dbody { fill: #17181b; }
+
+.seg7 .sg { fill: #3a2426; }
+
+.seg7 .sg.on { fill: #ff4a3b; filter: drop-shadow(0 0 4px rgba(255, 74, 59, 0.75)); }
+
+.seg7 .sg.sel { stroke: #ffd23f; stroke-width: 2.5; }
+
+.seg7 .sg.click { cursor: pointer; }
+
+.seg7 .slbl { font-size: 12px; fill: #c9c9cf; pointer-events: none; }
+
+.msi-fig { margin: 4px 0 6px; }
+
+.msi-ctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; margin: 4px 0 10px; }
+
+.msi-grp { display: grid; gap: 4px; min-width: 0; }
+
+.msi-cap { font-size: 0.78rem; color: var(--ink-3); font-weight: 700; }
+
+.bits.msi-bits { grid-template-columns: repeat(var(--n), 40px); }
+
+.bit.ro { cursor: default; }
+
+.bit.win { box-shadow: 0 0 0 2.5px var(--energy); }
+
+.bit.ign { opacity: 0.5; }
+
+.msi-outrow { display: flex; flex-wrap: wrap; gap: 5px; align-items: end; margin: 10px 0 4px; }
+
+.msi-outrow .msi-cap { flex-basis: 100%; }
+
+.msi-seg { display: grid; grid-template-columns: minmax(120px, 170px) minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 8px; }
+
+.msi-seg .seg { margin-bottom: 8px; }
+
+@media (max-width: 560px) {
+  .msi-seg { grid-template-columns: minmax(0, 1fr); }
+  .msi-seg > :first-child { max-width: 150px; }
+}
+
+.hlterm { background: var(--pen-soft); border-radius: 4px; padding: 0 3px; box-shadow: inset 0 -2px 0 var(--pen); }
+
+.msi-leds { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+
+.lamp { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border: 1px solid var(--line-strong); border-radius: 99px; font-family: var(--f-mono); font-size: 0.9rem; color: var(--ink-3); background: var(--surface); }
+
+.lamp::before { content: ''; width: 11px; height: 11px; border-radius: 50%; background: var(--surface-3); border: 1.5px solid var(--ink-3); }
+
+.lamp.on { color: var(--ink); border-color: var(--energy); font-weight: 700; }
+
+.lamp.on::before { background: var(--energy); border-color: var(--energy); box-shadow: 0 0 6px var(--energy); }
+
+.colsum { margin-top: 6px; }
+
+.colsum th { text-align: left; padding-right: 14px; }
+
+.colsum td { min-width: 1.7em; }
+
+.colsum td.car { color: var(--pen); font-size: 0.78rem; font-weight: 700; }
+
+.colsum tr.sum td { border-top: 2px solid var(--ink); font-weight: 700; }
