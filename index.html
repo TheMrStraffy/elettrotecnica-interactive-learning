@@ -15,9 +15,9 @@
 <header class="masthead">
   <div class="wrap masthead-inner">
     <div class="brand">
-      <p class="eyebrow">Ripasso interattivo · Elettrotecnica ed Elettronica · classi 3ª e 4ª</p>
+      <p class="eyebrow">Ripasso interattivo · Elettronica ed Elettrotecnica · dalla 1ª alla 5ª</p>
       <h1>Da <span class="omega">Ω</span>hm a Karnaugh</h1>
-      <p class="lede">Muovi i cursori, accendi i bit, raggruppa gli 1. Ogni scheda ha il laboratorio a sinistra e gli appunti a destra; le sfide ti danno punti esperienza.</p>
+      <p class="lede">Un percorso dalla 1ª alla 5ª: muovi i cursori, risolvi circuiti sempre nuovi, guarda lo stesso problema risolto in più modi. Ogni lezione ha il laboratorio a sinistra e gli appunti a destra.</p>
     </div>
     <div class="xp" aria-live="polite">
       <div class="xp-level"><span id="xp-rank">Livello 1 · Principiante</span><span class="xp-num"><span id="xp-points">0</span> XP</span></div>
@@ -27,23 +27,30 @@
   </div>
 </header>
 
-<nav class="tabs" aria-label="Argomenti">
-  <div class="wrap tabs-inner" role="tablist">
-    <button class="tab" role="tab" id="tab-circuito" aria-controls="circuito"><small>01</small>Il circuito</button>
-    <button class="tab" role="tab" id="tab-resistori" aria-controls="resistori"><small>02</small>Resistori</button>
-    <button class="tab" role="tab" id="tab-reti" aria-controls="reti"><small>03</small>Serie e parallelo</button>
-    <button class="tab" role="tab" id="tab-binario" aria-controls="binario"><small>04</small>Numeri binari</button>
-    <button class="tab" role="tab" id="tab-porte" aria-controls="porte"><small>05</small>Porte e circuiti</button>
-    <button class="tab" role="tab" id="tab-karnaugh" aria-controls="karnaugh"><small>06</small>Karnaugh</button>
-    <button class="tab" role="tab" id="tab-sfide" aria-controls="sfide"><small>★</small>Sfide</button>
-    <button class="tab" role="tab" id="tab-formulario" aria-controls="formulario"><small>Σ</small>Formulario</button>
+<nav class="tabs" aria-label="Navigazione">
+  <div class="wrap tabs-inner">
+    <button class="tab" type="button" data-route="percorso"><small>◎</small>Percorso</button>
+    <button class="tab current-tab" type="button" id="tab-current" hidden></button>
+    <span class="tabs-spacer"></span>
+    <button class="tab" type="button" data-route="sfide"><small>★</small>Sfide</button>
+    <button class="tab" type="button" data-route="formulario"><small>Σ</small>Formulario</button>
   </div>
 </nav>
 
 <main class="wrap">
 
+<section class="panel" id="percorso" hidden></section>
+
+<div class="unit-view" id="unit-view" hidden>
+  <p class="unit-title sr-only"></p>
+  <nav class="lesson-strip" aria-label="Lezioni dell'unità"></nav>
+  <div class="lesson-body"></div>
+  <nav class="lesson-pager" aria-label="Lezione precedente e successiva"></nav>
+</div>
+
+
 <!-- ======================================================= 01 CIRCUITO -->
-<section class="panel" id="circuito" role="tabpanel" aria-labelledby="tab-circuito">
+<section class="panel" id="circuito" hidden>
   <header class="panel-head">
     <h2>Il circuito elementare</h2>
     <p>Un generatore reale, un interruttore, un carico e due strumenti. Cambia la forza elettromotrice, la resistenza interna e il carico: amperometro e voltmetro rispondono subito, e il resistore si scalda.</p>
@@ -76,17 +83,17 @@
         <div class="card-head"><h3>Regolazioni</h3><p>Puoi anche scrivere i valori: 4,7k · 470 · 1M</p></div>
         <div class="fields">
           <div class="field">
-            <label for="ckt-E">Forza elettromotrice <var>E</var> <span class="hint">volt</span></label>
+            <label for="ckt-E"><span>Forza elettromotrice <var>E</var></span> <span class="hint">volt</span></label>
             <input type="range" id="ckt-E-r" aria-label="Forza elettromotrice">
             <input class="num" id="ckt-E" inputmode="decimal" autocomplete="off">
           </div>
           <div class="field">
-            <label for="ckt-rr">Resistenza interna <var>r</var> <span class="hint">ohm</span></label>
+            <label for="ckt-rr"><span>Resistenza interna <var>r</var></span> <span class="hint">ohm</span></label>
             <input type="range" id="ckt-rr-r" aria-label="Resistenza interna">
             <input class="num" id="ckt-rr" inputmode="decimal" autocomplete="off">
           </div>
           <div class="field">
-            <label for="ckt-R">Resistenza del carico <var>R</var> <span class="hint">ohm, scala logaritmica</span></label>
+            <label for="ckt-R"><span>Resistenza del carico <var>R</var></span> <span class="hint">ohm, scala logaritmica</span></label>
             <input type="range" id="ckt-R-r" aria-label="Resistenza del carico">
             <input class="num" id="ckt-R" inputmode="decimal" autocomplete="off">
           </div>
@@ -206,7 +213,7 @@
 </section>
 
 <!-- ======================================================= 02 RESISTORI -->
-<section class="panel" id="resistori" role="tabpanel" aria-labelledby="tab-resistori" hidden>
+<section class="panel" id="resistori" hidden>
   <header class="panel-head">
     <h2>Resistori e resistività</h2>
     <p>Leggi il codice colori, poi scopri da cosa dipende la resistenza di un filo: materiale, lunghezza, sezione e temperatura.</p>
@@ -230,7 +237,7 @@
         <div class="band-pickers" id="band-pickers"></div>
         <p id="res-read" style="color:var(--ink-2)"></p>
         <div class="field" style="grid-template-columns:minmax(0,1fr)">
-          <label for="res-input">Oppure scrivi un valore e guarda i colori <span class="hint">es. 4k7, 220, 1M, 0,47</span></label>
+          <label for="res-input"><span>Oppure scrivi un valore e guarda i colori</span> <span class="hint">es. 4k7, 220, 1M, 0,47</span></label>
           <input class="input" id="res-input" autocomplete="off" style="grid-area:rng;max-width:240px">
         </div>
         <p class="hint" id="res-input-fb" aria-live="polite"></p>
@@ -253,16 +260,16 @@
             <select class="input" id="w-mat" style="grid-column:1 / -1"></select>
           </div>
           <div class="field">
-            <label for="w-L">Lunghezza <var>L</var> <span class="hint">metri</span></label>
+            <label for="w-L"><span>Lunghezza <var>L</var></span> <span class="hint">metri</span></label>
             <input type="range" id="w-L-r" aria-label="Lunghezza">
             <input class="num" id="w-L" inputmode="decimal" autocomplete="off">
           </div>
           <div class="field">
-            <label for="w-S">Sezione <var>S</var> <span class="hint">valori commerciali</span></label>
+            <label for="w-S"><span>Sezione <var>S</var></span> <span class="hint">valori commerciali</span></label>
             <select class="input" id="w-S" style="grid-column:1 / -1"></select>
           </div>
           <div class="field">
-            <label for="w-T">Temperatura <var>t</var> <span class="hint">°C</span></label>
+            <label for="w-T"><span>Temperatura <var>t</var></span> <span class="hint">°C</span></label>
             <input type="range" id="w-T-r" aria-label="Temperatura">
             <input class="num" id="w-T" inputmode="decimal" autocomplete="off">
           </div>
@@ -323,7 +330,7 @@
 </section>
 
 <!-- ======================================================= 03 RETI -->
-<section class="panel" id="reti" role="tabpanel" aria-labelledby="tab-reti" hidden>
+<section class="panel" id="reti" hidden>
   <header class="panel-head">
     <h2>Serie, parallelo e Kirchhoff</h2>
     <p>Scegli come collegare tre resistori. Lo schema mostra tensioni e correnti di ogni componente, la soluzione è scritta passo per passo e le leggi di Kirchhoff vengono verificate con i numeri.</p>
@@ -350,7 +357,7 @@
         <div class="card-head"><h3>Valori</h3><p>Scrivi pure 2k2, 470, 1M</p></div>
         <div class="fields">
           <div class="field">
-            <label for="net-E">Generatore ideale <var>E</var> <span class="hint">volt</span></label>
+            <label for="net-E"><span>Generatore ideale <var>E</var></span> <span class="hint">volt</span></label>
             <input type="range" id="net-E-r" aria-label="Tensione del generatore">
             <input class="num" id="net-E" inputmode="decimal" autocomplete="off">
           </div>
@@ -445,7 +452,7 @@
 </section>
 
 <!-- ======================================================= 04 BINARIO -->
-<section class="panel" id="binario" role="tabpanel" aria-labelledby="tab-binario" hidden>
+<section class="panel" id="binario" hidden>
   <header class="panel-head">
     <h2>Sistemi di numerazione</h2>
     <p>Decimale, binario, ottale, esadecimale e BCD. Accendi i bit uno alla volta, guarda le conversioni passo per passo e prova la somma e la sottrazione in complemento a 2.</p>
@@ -515,12 +522,12 @@
         </div>
         <div class="fields">
           <div class="field">
-            <label for="ar-a"><var>A</var> <span class="hint">0–255</span></label>
+            <label for="ar-a"><span><var>A</var></span> <span class="hint">0–255</span></label>
             <input type="range" id="ar-a-r" aria-label="A">
             <input class="num" id="ar-a" inputmode="numeric" autocomplete="off">
           </div>
           <div class="field">
-            <label for="ar-b"><var>B</var> <span class="hint">0–255</span></label>
+            <label for="ar-b"><span><var>B</var></span> <span class="hint">0–255</span></label>
             <input type="range" id="ar-b-r" aria-label="B">
             <input class="num" id="ar-b" inputmode="numeric" autocomplete="off">
           </div>
@@ -601,7 +608,7 @@
 </section>
 
 <!-- ======================================================= 05 PORTE -->
-<section class="panel" id="porte" role="tabpanel" aria-labelledby="tab-porte" hidden>
+<section class="panel" id="porte" hidden>
   <header class="panel-head">
     <h2>Porte logiche e circuiti combinatori</h2>
     <p>Tocca gli ingressi per cambiarli: i fili a 1 si colorano e il LED d'uscita si accende. Puoi passare dai simboli americani (ANSI) a quelli europei (IEC).</p>
@@ -698,7 +705,7 @@
           <li>semplifica con l'algebra di Boole o con la <strong>mappa di Karnaugh</strong>;</li>
           <li>disegna il <strong>circuito</strong> con le porte.</li>
         </ol>
-        <p>La scheda <a href="#karnaugh" data-goto="karnaugh">Karnaugh</a> fa tutti e quattro i passaggi e disegna il circuito AND-OR finale.</p>
+        <p>La scheda <a href="#karnaugh" data-route="karnaugh">Karnaugh</a> fa tutti e quattro i passaggi e disegna il circuito AND-OR finale.</p>
       </article>
       <article class="note">
         <h4>Sommatori e multiplexer</h4>
@@ -713,7 +720,7 @@
 </section>
 
 <!-- ======================================================= 06 KARNAUGH -->
-<section class="panel" id="karnaugh" role="tabpanel" aria-labelledby="tab-karnaugh" hidden>
+<section class="panel" id="karnaugh" hidden>
   <header class="panel-head">
     <h2>Tabella di verità, forme canoniche, mappe di Karnaugh</h2>
     <p>Cambia le uscite nella tabella o direttamente nella mappa (0 → 1 → X → 0). Forma espansa, forma minima, gruppi e circuito si aggiornano insieme.</p>
@@ -869,7 +876,7 @@
 </section>
 
 <!-- ======================================================= SFIDE -->
-<section class="panel" id="sfide" role="tabpanel" aria-labelledby="tab-sfide" hidden>
+<section class="panel" id="sfide" hidden>
   <header class="panel-head">
     <h2>Sfide</h2>
     <p>Domande sempre diverse su tutto il programma. In allenamento vai al tuo ritmo e leggi la spiegazione; nella sfida a tempo hai 90 secondi per fare più punti possibile. Le risposte di fila valgono di più.</p>
@@ -940,7 +947,7 @@
 </section>
 
 <!-- ======================================================= FORMULARIO -->
-<section class="panel" id="formulario" role="tabpanel" aria-labelledby="tab-formulario" hidden>
+<section class="panel" id="formulario" hidden>
   <header class="panel-head">
     <h2>Formulario</h2>
     <p>Tutte le formule in un posto, con le unità di misura.</p>
@@ -1016,6 +1023,10 @@
           <tr><td>Partitore di corrente</td><td class="f"><var>I</var><sub>1</sub> = <var>I</var>·<var>R</var><sub>2</sub>/(<var>R</var><sub>1</sub> + <var>R</var><sub>2</sub>)</td></tr>
           <tr><td>LKC (nodi)</td><td class="f">Σ <var>I</var><sub>entr</sub> = Σ <var>I</var><sub>usc</sub></td></tr>
           <tr><td>LKT (maglie)</td><td class="f">Σ <var>E</var> = Σ <var>R</var>·<var>I</var></td></tr>
+          <tr><td>Millman (2 nodi)</td><td class="f"><var>V</var><sub>AB</sub> = Σ(<var>E</var><sub><var>k</var></sub>/<var>R</var><sub><var>k</var></sub>) / Σ(1/<var>R</var><sub><var>k</var></sub>)</td></tr>
+          <tr><td>Thevenin</td><td class="f"><var>I</var> = <var>V</var><sub>th</sub>/(<var>R</var><sub>th</sub> + <var>R</var><sub>L</sub>)</td></tr>
+          <tr><td>Norton</td><td class="f"><var>I</var><sub>n</sub> = <var>V</var><sub>th</sub>/<var>R</var><sub>th</sub>, <var>R</var><sub>n</sub> = <var>R</var><sub>th</sub></td></tr>
+          <tr><td>Ponte bilanciato</td><td class="f"><var>R</var><sub>1</sub><var>R</var><sub>4</sub> = <var>R</var><sub>2</sub><var>R</var><sub>3</sub></td></tr>
         </tbody>
       </table></div>
     </div>
@@ -1064,9 +1075,10 @@
 </section>
 
 </main>
+<div id="parking" hidden></div>
 
 <footer class="foot">
-  <div class="wrap">Da Ohm a Karnaugh · ripasso per istituti tecnici, indirizzo elettronica ed elettrotecnica. Funziona anche offline: apri <span class="mono">index.html</span> nel browser.</div>
+  <div class="wrap">Da Ohm a Karnaugh · ripasso per istituti tecnici, indirizzo Elettronica ed Elettrotecnica, dalla 1ª alla 5ª. Funziona anche offline: apri <span class="mono">index.html</span> nel browser.</div>
 </footer>
 
 <script src="js/core.js"></script>
@@ -1078,5 +1090,12 @@
 <script src="js/gates.js"></script>
 <script src="js/karnaugh.js"></script>
 <script src="js/quiz.js"></script>
+<script src="js/dc.js"></script>
+<script src="js/schematics.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/units/cc-base.js"></script>
+<script src="js/units/cc-methods.js"></script>
+<script src="js/units/cc-advanced.js"></script>
+<script src="js/path.js"></script>
 </body>
 </html>

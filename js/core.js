@@ -222,55 +222,6 @@
     };
   };
 
-  // ---------- Schede ----------
-  function initTabs() {
-    const tabs = [...document.querySelectorAll('.tab')];
-    const nav = document.querySelector('.tabs');
-    function show(id, focus) {
-      tabs.forEach((t) => {
-        const on = t.getAttribute('aria-controls') === id;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-        if (on) {
-          if (focus) t.focus();
-          t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-        }
-      });
-      App.store.set('tab', id);
-      document.dispatchEvent(new CustomEvent('dok:tab', { detail: id }));
-    }
-    tabs.forEach((t, i) => {
-      t.addEventListener('click', () => {
-        show(t.getAttribute('aria-controls'));
-        const top = nav.getBoundingClientRect().top + window.scrollY - 1;
-        if (window.scrollY > top) window.scrollTo({ top });
-      });
-      t.addEventListener('keydown', (e) => {
-        let j = null;
-        if (e.key === 'ArrowRight') j = (i + 1) % tabs.length;
-        if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
-        if (e.key === 'Home') j = 0;
-        if (e.key === 'End') j = tabs.length - 1;
-        if (j !== null) {
-          e.preventDefault();
-          show(tabs[j].getAttribute('aria-controls'), true);
-        }
-      });
-    });
-    document.querySelectorAll('[data-goto]').forEach((a) =>
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        show(a.dataset.goto);
-        window.scrollTo({ top: nav.getBoundingClientRect().top + window.scrollY - 1 });
-      })
-    );
-    const ids = tabs.map((t) => t.getAttribute('aria-controls'));
-    const hash = location.hash.slice(1);
-    const saved = App.store.get('tab', ids[0]);
-    show(ids.includes(hash) ? hash : ids.includes(saved) ? saved : ids[0]);
-  }
-
   App.isVisible = (el) => !!el && !el.closest('[hidden]');
 
   const inits = [];
@@ -281,6 +232,5 @@
     for (const fn of inits) {
       try { fn(); } catch (e) { console.error(e); }
     }
-    initTabs();
   });
 })();
