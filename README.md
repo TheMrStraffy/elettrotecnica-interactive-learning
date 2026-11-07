@@ -20,7 +20,7 @@ La pagina iniziale è una mappa per anno. Le unità pronte si aprono; le altre s
 
 | Anno | Unità pronte | In arrivo |
 | --- | --- | --- |
-| 1ª–2ª | Il circuito elementare, Resistori e resistività | Grandezze e notazione scientifica, formule inverse ed equazioni, carica e campo |
+| 1ª–2ª | Il circuito elementare, Resistori e resistività, **Grandezze, unità e notazione scientifica**, **Formule inverse, equazioni e sistemi**, **Carica, campo e potenziale** | — |
 | 3ª | **Reti in corrente continua** (15 lezioni), Sistemi di numerazione, Porte logiche e circuiti, Algebra di Boole e Karnaugh | Condensatori e transitori RC, magnetismo e induttori, combinatori integrati |
 | 4ª | — | Corrente alternata, RLC, potenze, diodi, transistor, operazionali, logica sequenziale, filtri |
 | 5ª | — | Applicazioni degli operazionali, filtri attivi, oscillatori, conversione A/D e D/A, trasduttori, alimentatori, microcontrollori, controlli |
@@ -47,6 +47,16 @@ L'unità nasce dal documento "Circuiti in corrente continua — piano ed eserciz
 | ✓ · Verifica | — | I sette esercizi di verifica del documento, poi varianti casuali |
 | Σ · Metodo | Guida alla scelta del metodo | Formulario e checklist |
 
+### Biennio
+
+Tre unità da 4 lezioni, con lo stesso schema delle reti: un elemento interattivo per lezione, un esempio con "Altri numeri" ed esercizi autocorretti.
+
+| Unità | Lezioni e interattivi |
+| --- | --- |
+| Grandezze, unità e notazione scientifica | Unità SI (calcolatrice delle unità: V × A = W), prefissi (scala da giga a pico), notazione scientifica (valori reali su scala logaritmica e convertitore), cifre significative ed errori (arrotondamento e tolleranza di un resistore) |
+| Formule inverse, equazioni e sistemi | Formule inverse (la formula rigirata un passo alla volta), proporzionalità (diretta, inversa, quadratica con il grafico e il tasto "raddoppia"), equazioni di primo grado (soluzione passo per passo), sistemi 2×2 (due rette con Cramer in diretta e il sistema di un circuito) |
+| Carica, campo e potenziale | Carica (quanti elettroni passano), legge di Coulomb (due cariche con le forze e la curva 1/r²), campo elettrico (mappa da toccare per leggere intensità e direzione), potenziale (la collina tra due armature, con carica positiva o elettrone) |
+
 ### Le altre unità
 
 | Unità | Laboratorio |
@@ -70,6 +80,8 @@ js/lessons.js         motore delle lezioni: esercizi con correzione, esempi svol
 js/dc.js              risolutore di reti in corrente continua e metodi delle lezioni
 js/schematics.js      schemi SVG dei circuiti
 js/units/cc-*.js      unità "Reti in corrente continua"
+js/units/b-*.js       unità del biennio (grandezze, algebra, elettrostatica)
+js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2, Coulomb e campo
 js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni
 js/circuit.js …       laboratori (circuito, resistori, reti, binario, porte, Karnaugh, sfide)
 tests/                test dei motori di calcolo
@@ -85,4 +97,5 @@ npm test
 ```
 
 - Logica: la forma minima calcolata coincide con una ricerca esaustiva su tutte le 256 funzioni a 3 variabili e su 150 funzioni casuali a 4 variabili con indifferenze.
+- Biennio: analisi dimensionale delle unità SI, notazione scientifica e ingegneristica su 2000 valori casuali, cifre significative, sistemi 2×2 contro soluzioni note, Coulomb e campo di un dipolo.
 - Reti: il risolutore riproduce i risultati del documento; correnti di ramo, maglie, Millman, sovrapposizione e Thevenin danno lo stesso risultato del risolutore su 2000 circuiti casuali; stella-triangolo, Millman a tre rami e reti miste sono verificati allo stesso modo.

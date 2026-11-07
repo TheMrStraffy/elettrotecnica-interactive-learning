@@ -11,9 +11,9 @@
       units: [
         { title: 'Il circuito elementare', desc: 'Carica, corrente, tensione e f.e.m.; generatore reale, legge di Ohm, potenza ed effetto Joule.', route: 'circuito', kind: 'Laboratorio' },
         { title: 'Resistori e resistività', desc: 'Codice colori a 4 e 5 fasce, seconda legge di Ohm, materiali e temperatura.', route: 'resistori', kind: 'Laboratorio' },
-        { title: 'Grandezze, unità e notazione scientifica', desc: 'Multipli e sottomultipli, conversioni, cifre significative, ordini di grandezza.', soon: 2 },
-        { title: 'Formule inverse, equazioni e sistemi', desc: 'Proporzionalità, grafici, sistemi 2×2 con sostituzione e Cramer: servono per Kirchhoff.', soon: 2 },
-        { title: 'Carica, campo e potenziale', desc: 'Legge di Coulomb, campo elettrico, lavoro ed energia potenziale.', soon: 2 },
+        { unit: 'mis' },
+        { unit: 'alg' },
+        { unit: 'elt' },
       ],
     },
     {
@@ -92,8 +92,8 @@
       const fams = unitLessonsWithFamilies(u);
       const done = fams.filter((f) => App.progress.has(u.id, f)).length;
       const nl = u.lessons.length;
-      return `<a class="unit-card featured" href="#${u.route}" data-route="${u.route}">
-        <span class="row tags"><span class="tag accent">${u.badge}</span><span class="tag">${nl} lezioni · ${fams.length} tipi di esercizio</span></span>
+      return `<a class="unit-card${u.badge ? ' featured' : ' ready'}" href="#${u.route}" data-route="${u.route}">
+        <span class="row tags">${u.badge ? `<span class="tag accent">${u.badge}</span>` : '<span class="tag accent">Nuovo</span>'}<span class="tag">${nl} lezioni · ${fams.length} tipi di esercizio</span></span>
         <h4>${u.title}</h4><p>${u.desc}</p>
         <span class="uprog"><span class="bar"><i style="width:${(100 * done) / Math.max(1, fams.length)}%"></i></span><span class="hint">${done}/${fams.length} tipi di esercizio risolti</span></span></a>`;
     }
@@ -123,14 +123,14 @@
     const isMod = typeof l.num === 'number';
     el.innerHTML = `
       <header class="panel-head">
-        <p class="eyebrow">${isMod ? 'Modulo ' + l.num + ' · ' : ''}${u.title}</p>
+        <p class="eyebrow">${isMod ? (u.lessonWord || 'Modulo') + ' ' + l.num + ' · ' : ''}${u.title}</p>
         <h2>${l.title}</h2>
         <p>${l.intro}</p>
         ${l.goals ? `<ul class="goals">${l.goals.map((g) => `<li>${g}</li>`).join('')}</ul>` : ''}
       </header>
       <div class="panel-grid">
         <div class="lab"></div>
-        <aside class="notes" aria-label="Appunti"><header><h3>Appunti</h3><span class="hand">dal documento, con qualche aggiunta</span></header>${l.theory || ''}</aside>
+        <aside class="notes" aria-label="Appunti"><header><h3>Appunti</h3><span class="hand">${u.notesTag || 'quello che serve sapere'}</span></header>${l.theory || ''}</aside>
       </div>`;
     const lab = el.querySelector('.lab');
     (l.widgets || []).forEach((w) => { try { w(lab); } catch (e) { console.error(e); } });
@@ -172,7 +172,7 @@
     view.querySelector('.lesson-pager').innerHTML =
       (prev ? `<button type="button" class="btn ghost" data-route="${u.id}-${prev.id}">← ${prev.short}</button>` : '<span></span>') +
       (next ? `<button type="button" class="btn" data-route="${u.id}-${next.id}">${next.short} →</button>` : `<button type="button" class="btn ghost" data-route="percorso">Torna al percorso</button>`);
-    setCurrentTab(u.year + 'ª · ' + u.title, u.id + '-' + l.id);
+    setCurrentTab((u.yearLabel || u.year + 'ª') + ' · ' + u.title, u.id + '-' + l.id);
     return true;
   }
 
