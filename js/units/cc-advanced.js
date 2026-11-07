@@ -452,7 +452,7 @@
 
   App.unitsData = App.unitsData || [];
   App.unitsData.push({
-    id: 'cc', year: '3', title: 'Reti in corrente continua', route: 'cc-m1',
+    id: 'cc', year: '3', yearLabel: '3ª', title: 'Reti in corrente continua', route: 'cc-m1', notesTag: 'dal documento, con qualche aggiunta',
     desc: 'Dalla legge di Ohm a Thevenin e al ponte di Wheatstone: 11 moduli, cinque metodi sullo stesso circuito, verifica finale.',
     badge: 'Dal tuo documento',
     lessons: CC.lessons,

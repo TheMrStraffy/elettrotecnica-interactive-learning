@@ -1611,3 +1611,63 @@ a.unit-card:hover { border-color: var(--pen); transform: translateY(-1px); }
 .checklist { list-style: none; padding: 0; }
 
 .checklist label { display: flex; gap: 8px; align-items: baseline; cursor: pointer; }
+
+/* ---------- Biennio: widget ---------- */
+
+.unit-card.ready { border-color: color-mix(in srgb, var(--pen) 55%, var(--line)); }
+
+.unit-calc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.unit-calc .input { width: auto; min-width: 64px; max-width: 90px; }
+
+.unit-calc .op { min-width: 56px; }
+
+.eqsign { font-family: var(--f-math); font-size: 1.3rem; }
+
+.unit-out { font-size: 1.15rem; display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+
+.chart .stair { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.2; }
+
+.chart .stair.from { fill: var(--pen-soft); stroke: var(--pen); stroke-width: 2.4; }
+
+.chart .stair.to { fill: color-mix(in srgb, var(--energy) 18%, transparent); stroke: var(--energy); stroke-width: 2.4; }
+
+.chart .stair-p { font-family: var(--f-display); font-weight: 800; font-size: 15px; fill: var(--ink); }
+
+.chart .stair-arrow { fill: none; stroke: var(--energy); stroke-width: 1.8; }
+
+.chart .mk circle { fill: var(--surface); stroke: var(--pen); stroke-width: 2; cursor: pointer; }
+
+.chart .mk.on circle { fill: var(--pen); }
+
+.chart .mk:focus { outline: none; }
+
+.chart .mk:focus-visible circle { stroke-width: 3.5; }
+
+.digits { font-family: var(--f-mono); font-size: 1.8rem; letter-spacing: 0.04em; }
+
+.digits b.sig { color: var(--pen); font-weight: 600; }
+
+.digits b.nsig { color: var(--ink-3); font-weight: 400; }
+
+.big-sci { font-size: 1.4rem; }
+
+.sys { display: inline-grid; gap: 2px; padding-left: 12px; border-left: 2px solid var(--ink); border-radius: 10px 0 0 10px; vertical-align: middle; margin: 4px 0; font-family: var(--f-math); }
+
+.sys-big { font-size: 1.2rem; }
+
+.sys-widget { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 16px; align-items: center; }
+
+@media (max-width: 640px) { .sys-widget { grid-template-columns: minmax(0, 1fr); } }
+
+.chart .farrow { stroke: var(--bad); stroke-width: 3; }
+
+.chart .fhead { fill: var(--bad); }
+
+.chart .farr { stroke: var(--ink-2); stroke-width: 1.4; }
+
+.chart .farr + .fhead { fill: var(--ink-2); }
+
+.chart .probe-arrow { stroke: var(--bad); stroke-width: 3; }
+
+.field-map { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
