@@ -5,7 +5,7 @@
  * - I caratteri di Google Fonts si salvano la prima volta che arrivano dalla rete.
  */
 // <precache> generato da tools/build-sw.js (npm run build): non modificare a mano
-const VERSION = 'ad9e6d02bb4d';
+const VERSION = '2c80e8cc747b';
 const FILES = [
   './',
   'index.html',
@@ -41,6 +41,12 @@ const FILES = [
   'js/units/q-rlc.js',
   'js/units/q-pot.js',
   'js/units/q-bode.js',
+  'js/semi.js',
+  'js/seq.js',
+  'js/units/q-dio.js',
+  'js/units/q-bjt.js',
+  'js/units/q-opa.js',
+  'js/units/q-seq.js',
   'js/path.js',
   'js/pwa.js',
   'icons/icon.svg',

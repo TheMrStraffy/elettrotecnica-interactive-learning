@@ -37,7 +37,7 @@ La pagina iniziale è una mappa per anno. Le unità pronte si aprono; le altre s
 | --- | --- | --- |
 | 1ª–2ª | Il circuito elementare, Resistori e resistività, **Grandezze, unità e notazione scientifica**, **Formule inverse, equazioni e sistemi**, **Carica, campo e potenziale** | — |
 | 3ª | **Reti in corrente continua** (16 lezioni, con il generatore di esercizi), **Condensatori e transitori RC**, **Magnetismo e induttori**, Sistemi di numerazione, Porte logiche e circuiti, Algebra di Boole e Karnaugh, **Circuiti combinatori integrati** | — |
-| 4ª | **Corrente alternata e fasori**, **Impedenza, RLC e risonanza**, **Potenze e rifasamento**, **Filtri passivi e Bode** | Diodi, transistor, operazionali, logica sequenziale |
+| 4ª | **Corrente alternata e fasori**, **Impedenza, RLC e risonanza**, **Potenze e rifasamento**, **Filtri passivi e Bode**, **Diodi e raddrizzatori**, **Transistor BJT e MOSFET**, **Amplificatori operazionali**, **Logica sequenziale** | — |
 | 5ª | — | Applicazioni degli operazionali, filtri attivi, oscillatori, conversione A/D e D/A, trasduttori, alimentatori, microcontrollori, controlli |
 
 ### Reti in corrente continua
@@ -106,6 +106,19 @@ Quattro unità da 4 lezioni, ciascuna con un elemento interattivo.
 | Potenze e rifasamento | Potenza istantanea con le parti negative, triangolo delle potenze, Boucherot "in casa" (accendi gli apparecchi), rifasamento con capacità e risparmio di corrente |
 | Filtri passivi e Bode | Decibel su scala logaritmica, passa-basso RC (Bode di modulo e fase e segnali nel tempo), i quattro filtri RC e RL, passa-banda con diagramma esatto e asintotico |
 
+### Quarto anno: elettronica
+
+Altre quattro unità da 4 lezioni, con i circuiti disegnati e animati (diodi che conducono, transistor in saturazione o in zona attiva, LED che si accendono).
+
+| Unità | Lezioni e interattivi |
+| --- | --- |
+| Diodi e raddrizzatori | Caratteristica del diodo e retta di carico con tre modelli (vero, a soglia, ideale) e polarizzazione inversa; raddrizzatore a una semionda e a ponte di Graetz con i diodi che conducono nelle due semionde; condensatore di livellamento con il ripple simulato e quello della formula; stabilizzatore con Zener (quando smette di stabilizzare) |
+| Transistor BJT e MOSFET | Caratteristiche d'uscita con la retta di carico e le tre zone; BJT e MOSFET che accendono un LED da un'uscita a 5 V; polarizzazione a partitore (quanto poco cambia IC se cambia β); amplificatore a emettitore comune che taglia l'uscita se l'ingresso è troppo grande |
+| Amplificatori operazionali | Comparatore su una sinusoide (il principio del PWM); invertente, non invertente e inseguitore con la saturazione; DAC a 4 bit con il sommatore a resistori pesati e la sua scala; slew rate di 741, TL081, LM358 e NE5532 |
+| Logica sequenziale | Latch SR con porte NOR o NAND e la storia degli ingressi; flip-flop D, JK e T con il colpo di clock (anche automatico) e il diagramma temporale; contatore asincrono a 4 bit con modulo regolabile, NAND di reset e diagramma di Q₀…Q₃; registro a scorrimento con ingresso seriale (invio di una parola come in una UART), contatore ad anello e Johnson |
+
+Negli esercizi della logica sequenziale si leggono e si completano i diagrammi temporali: impulsi tra un fronte e l'altro da ignorare, clear asincrono, contatori da riconoscere dalle forme d'onda.
+
 ### Le altre unità
 
 | Unità | Laboratorio |
@@ -131,10 +144,12 @@ js/schematics.js      schemi SVG dei circuiti
 js/units/cc-*.js      unità "Reti in corrente continua"
 js/units/b-*.js       unità del biennio (grandezze, algebra, elettrostatica)
 js/units/t-*.js       unità del terzo anno (condensatori, magnetismo, combinatori integrati)
-js/units/q-*.js       unità del quarto anno (alternata, RLC, potenze, filtri) e strumenti comuni (fasori, scala logaritmica, oscilloscopio)
+js/units/q-*.js       unità del quarto anno (alternata, RLC, potenze, filtri, diodi, transistor, operazionali, sequenziale) e strumenti comuni (fasori, scala logaritmica, oscilloscopio)
 js/units/cc-gen.js    generatore di esercizi sulle reti in continua
 js/gen.js             motore del generatore: relazioni dei circuiti e soluzione a catena
 js/ac.js              numeri complessi, impedenze, risonanza, potenze, rifasamento, filtri, Bode
+js/semi.js            diodi, raddrizzatori, ripple, Zener, BJT, MOSFET, operazionali
+js/seq.js             latch, flip-flop, contatori, registri a scorrimento
 js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2, Coulomb e campo, condensatori, magnetismo
 js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni, sommatori, decoder, display
 js/circuit.js …       laboratori (circuito, resistori, reti, binario, porte, Karnaugh, sfide)
@@ -159,5 +174,6 @@ npm test
 - App: `sw.js` è aggiornato con i file e la versione attuali; il manifest ha le icone richieste da Chrome (192, 512, maskable) e le PNG hanno davvero quelle dimensioni.
 - Generatore: ogni formula di ogni circuito è coerente con lo stato calcolato; per ogni circuito e livello si generano 60 esercizi e si verifica che i dati siano puliti, che i passaggi rifatti dai soli dati portino alle risposte e che le risposte reggano gli arrotondamenti.
 - Alternata: identità dei numeri complessi su 500 coppie casuali, sinusoidi, risonanza (X_L = X_C e accordo) su 200 circuiti, potenze e Boucherot, rifasamento (il cos φ ottenuto è quello voluto), decibel, filtri e asintoti di Bode.
+- Elettronica: diodo (Shockley e modello a soglia), raddrizzatori e ripple, Zener dentro e fuori regolazione, BJT nelle tre zone, partitore di base esatto e approssimato, MOSFET, operazionali (invertente, non invertente, sommatore, differenziale, DAC, slew rate); latch SR confrontato con le due NOR retroazionate su tutte le combinazioni, tabelle dei flip-flop (il JK che fa da D e da T), contatori modulo 2…16 con la NAND di reset, registri, anello e Johnson fino a 8 flip-flop.
 - Terzo anno: condensatore piano, serie e parallelo, carica e scarica con le formule inverse del tempo su 200 casi casuali; campo di filo e solenoide, induttanza, forze, flusso; sommatore a 4 bit su tutte le 512 combinazioni (somma, riporto, overflow = C4 ⊕ C3, sottrazione), decoder, multiplexer, encoder a priorità, segmenti del display.
 - Reti: il risolutore riproduce i risultati del documento; correnti di ramo, maglie, Millman, sovrapposizione e Thevenin danno lo stesso risultato del risolutore su 2000 circuiti casuali; stella-triangolo, Millman a tre rami e reti miste sono verificati allo stesso modo.

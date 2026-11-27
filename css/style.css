@@ -1937,3 +1937,112 @@ svg.msi { display: block; width: 100%; height: auto; margin-inline: auto; }
 
 /* con la barra degli aggiornamenti gli avvisi salgono sopra */
 body:has(.update-bar) .toast-host { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+
+/* ---------- 4ª parte 2: diodi, transistor, operazionali ---------- */
+
+.dcs .dio { fill: var(--surface); stroke: var(--wire); stroke-width: 2.2; stroke-linejoin: round; }
+
+.dcs .dio.on { fill: var(--pen-soft); stroke: var(--pen); }
+
+.dcs .ray { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-linecap: round; }
+
+.dcs .ray-on .ray { stroke: var(--energy); stroke-width: 2; }
+
+.dcs .bjt { fill: none; }
+
+.dcs .bjt.sat { stroke: var(--pen); }
+
+.dcs .bjt.act { stroke: var(--energy); }
+
+.dcs .bjt.off { stroke: var(--ink-3); stroke-dasharray: 4 3; }
+
+/* ---------- Logica sequenziale ---------- */
+
+.logic .ffbox { fill: var(--surface); stroke: var(--wire); stroke-width: 2; }
+
+.logic .ffck { fill: none; stroke: var(--wire); stroke-width: 1.8; stroke-linejoin: round; }
+
+.logic .ffck.on { stroke: var(--pen); stroke-width: 2.6; }
+
+.logic .pn { font-family: var(--f-math); font-style: italic; font-size: 15px; fill: var(--ink); }
+
+.logic .pn.ty { font-family: var(--f-mono); font-style: normal; font-size: 12px; fill: var(--ink-3); }
+
+.logic .tl.sm { font-size: 14px; }
+
+.logic .tl.w { font-family: var(--f-mono); font-style: normal; font-size: 11px; fill: var(--ink-3); }
+
+.logic .tl.ck { font-family: var(--f-mono); font-style: normal; font-size: 12px; fill: var(--ink-2); }
+
+.logic .ovl, .tim .ovl { text-decoration: overline; }
+
+.tim { width: 100%; height: auto; display: block; }
+
+.tim .tw { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linejoin: round; }
+
+.tim .tw.clk { stroke: var(--ink-3); stroke-width: 1.6; }
+
+.tim .tw.in { stroke: var(--g2); }
+
+.tim .tw.in2 { stroke: var(--g3); }
+
+.tim .tw.clr { stroke: var(--g4); }
+
+.tim .tw.q { stroke: var(--pen); stroke-width: 2.4; }
+
+.tim .tw.q2 { stroke: var(--g5); stroke-width: 2.4; }
+
+.tim .edge { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 4; }
+
+.tim .thl { fill: var(--bad-soft); }
+
+.tim .tunk { stroke: var(--line-strong); stroke-width: 1.2; stroke-dasharray: 2 5; }
+
+.tim .tn { font-family: var(--f-math); font-style: italic; font-size: 16px; fill: var(--ink); }
+
+.tim .tn.ck { font-family: var(--f-mono); font-style: normal; font-size: 11.5px; fill: var(--ink-2); }
+
+.tim .sb { font-size: 11px; }
+
+.tim .tv, .tim .tq {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  fill: var(--ink-2);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.tim .tv.up { fill: var(--ink-3); stroke: none; }
+
+.tim .tq { fill: var(--pen); font-weight: 700; }
+
+.seq-chips { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin: 8px 0 4px; }
+
+.seq-chips .msi-cap { flex-basis: 100%; }
+
+.seqchip {
+  min-width: 30px;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+.seqchip.on { background: var(--pen); border-color: var(--pen); color: var(--on-pen); }
+
+.seq-side { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 22px; align-items: start; margin: 6px 0 10px; }
+
+.seq-side .tt th, .seq-side .tt td { white-space: nowrap; }
+
+@media (max-width: 560px) { .seq-side { grid-template-columns: minmax(0, 1fr); } }
+
+.logic .sb { font-size: 11px; }
+
+.seq-fig { overflow-x: auto; }
+
+.seq-fig svg { min-width: 440px; }

@@ -47,17 +47,18 @@
   Q.waveSVG = (o) => {
     const W = o.W || 520;
     const H = o.H || 220;
-    const ch = K.chart({ W, H, xmax: o.tmax, ymin: -o.ymax, ymax: o.ymax, xu: o.xu === undefined ? 's' : o.xu, yu: o.yu === undefined ? 'V' : o.yu, xlabel: o.xlabel || 't', ylabel: o.ylabel || '', ticks: 4 });
+    const ymin = o.ymin != null ? o.ymin : -o.ymax;
+    const ch = K.chart({ W, H, xmax: o.tmax, ymin, ymax: o.ymax, xu: o.xu === undefined ? 's' : o.xu, yu: o.yu === undefined ? 'V' : o.yu, xlabel: o.xlabel || 't', ylabel: o.ylabel || '', ticks: 4 });
     let s = ch.s + `<line class="axis" x1="${ch.X(0)}" y1="${ch.Y(0)}" x2="${ch.X(o.tmax)}" y2="${ch.Y(0)}"/>`;
     (o.hl || []).forEach((l) => { s += `<line class="${l.cls || 'guide'}" x1="${ch.X(0)}" y1="${ch.Y(l.y)}" x2="${ch.X(o.tmax)}" y2="${ch.Y(l.y)}"/>` + (l.label ? `<text class="wlbl" x="${ch.X(o.tmax) - 4}" y="${ch.Y(l.y) - 4}" text-anchor="end">${l.label}</text>` : ''); });
-    (o.marks || []).forEach((m) => { s += `<line class="guide" x1="${ch.X(m.t)}" y1="${ch.Y(o.ymax)}" x2="${ch.X(m.t)}" y2="${ch.Y(-o.ymax)}"/>` + (m.label ? `<text class="wlbl" x="${ch.X(m.t) + 4}" y="${ch.Y(o.ymax) + 12}">${m.label}</text>` : ''); });
+    (o.marks || []).forEach((m) => { s += `<line class="guide" x1="${ch.X(m.t)}" y1="${ch.Y(o.ymax)}" x2="${ch.X(m.t)}" y2="${ch.Y(ymin)}"/>` + (m.label ? `<text class="wlbl" x="${ch.X(m.t) + 4}" y="${ch.Y(o.ymax) + 12}">${m.label}</text>` : ''); });
     o.traces.forEach((tr) => {
       let d = '';
       const n = 360;
       for (let k = 0; k <= n; k++) {
         const t = (o.tmax * k) / n;
         const y = tr.fn ? tr.fn(t) : (tr.off || 0) + tr.amp * Math.sin(A.TAU * tr.f * t + tr.deg * A.D2R);
-        d += (k ? 'L' : 'M') + ch.X(t).toFixed(1) + ' ' + ch.Y(App.clamp(y, -o.ymax * 1.05, o.ymax * 1.05)).toFixed(1);
+        d += (k ? 'L' : 'M') + ch.X(t).toFixed(1) + ' ' + ch.Y(App.clamp(y, ymin - Math.abs(o.ymax) * 0.05, o.ymax * 1.05)).toFixed(1);
       }
       s += `<path class="${tr.cls || 'gen'}" d="${d}"${tr.dash ? ' stroke-dasharray="6 4"' : ''}/>`;
     });
