@@ -6,13 +6,28 @@ Ogni lezione ha un laboratorio da toccare a sinistra e gli appunti di teoria a d
 
 ## Come si usa
 
-Apri `index.html` con un browser qualsiasi (doppio clic). Non serve installare niente e funziona anche offline; senza connessione cambiano solo i caratteri tipografici.
+### Come app (consigliato)
 
-Se vuoi un unico file da mandare ai compagni:
+Apri **https://themrstraffy.github.io/elettrotecnica-interactive-learning/** e installala:
+
+- **Android** (Chrome): tocca *Installa* nella barra in alto, oppure menu ⋮ → *Installa app*;
+- **PC** (Chrome o Edge): l'icona di installazione nella barra degli indirizzi, oppure menu ⋮ → *Installa Da Ohm a Karnaugh*.
+
+Si apre come le altre app, a schermo intero, e funziona **senza internet**. Quando esce una versione nuova la scarica da sola e chiede se aggiornare. Nella sezione **App** (in alto a destra) ci sono le istruzioni e il **backup dei progressi**: XP e livelli sono salvati sul dispositivo, e con il file di backup si ripristinano o si portano dal telefono al PC.
+
+### Come file
+
+Apri `index.html` con un browser qualsiasi (doppio clic): funziona anche offline, ma non si installa e non si aggiorna da sola. Se vuoi un unico file da mandare ai compagni:
 
 ```sh
-npm run build        # crea dist/da-ohm-a-karnaugh.html, tutto incluso
+npm run build        # aggiorna sw.js e crea dist/da-ohm-a-karnaugh.html, tutto incluso
 ```
+
+### Pubblicazione
+
+Il sito è servito da GitHub Pages direttamente dal ramo `main` (Settings → Pages → *Deploy from a branch* → `main`, cartella `/`). Il file `.nojekyll` evita l'elaborazione di Jekyll.
+
+Dopo ogni modifica ai file dell'app esegui `npm run build`: aggiorna in `sw.js` l'elenco dei file da salvare offline e la versione (un'impronta del loro contenuto). Se ci si dimentica, `npm test` lo segnala. È la versione nuova a far comparire l'avviso di aggiornamento sui dispositivi.
 
 ## Il percorso
 
@@ -124,7 +139,11 @@ js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2,
 js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni, sommatori, decoder, display
 js/circuit.js …       laboratori (circuito, resistori, reti, binario, porte, Karnaugh, sfide)
 tests/                test dei motori di calcolo
-tools/                script per il file unico
+manifest.webmanifest  descrizione dell'app installabile (nome, colori, icone, scorciatoie)
+sw.js                 service worker: uso offline e aggiornamenti (l'elenco dei file è generato)
+js/pwa.js             installazione, avviso di aggiornamento, pannello App, backup dei progressi
+icons/                icone dell'app (sorgente SVG e PNG)
+tools/                file unico (build-single), elenco offline (build-sw), icone (icons)
 ```
 
 Per aggiungere un'unità: un file in `js/units/` che registra le sue lezioni in `App.unitsData`, e una voce nell'elenco `YEARS` di `js/path.js`.
@@ -137,6 +156,7 @@ npm test
 
 - Logica: la forma minima calcolata coincide con una ricerca esaustiva su tutte le 256 funzioni a 3 variabili e su 150 funzioni casuali a 4 variabili con indifferenze.
 - Biennio: analisi dimensionale delle unità SI, notazione scientifica e ingegneristica su 2000 valori casuali, cifre significative, sistemi 2×2 contro soluzioni note, Coulomb e campo di un dipolo.
+- App: `sw.js` è aggiornato con i file e la versione attuali; il manifest ha le icone richieste da Chrome (192, 512, maskable) e le PNG hanno davvero quelle dimensioni.
 - Generatore: ogni formula di ogni circuito è coerente con lo stato calcolato; per ogni circuito e livello si generano 60 esercizi e si verifica che i dati siano puliti, che i passaggi rifatti dai soli dati portino alle risposte e che le risposte reggano gli arrotondamenti.
 - Alternata: identità dei numeri complessi su 500 coppie casuali, sinusoidi, risonanza (X_L = X_C e accordo) su 200 circuiti, potenze e Boucherot, rifasamento (il cos φ ottenuto è quello voluto), decibel, filtri e asintoti di Bode.
 - Terzo anno: condensatore piano, serie e parallelo, carica e scarica con le formule inverse del tempo su 200 casi casuali; campo di filo e solenoide, induttanza, forze, flusso; sommatore a 4 bit su tutte le 512 combinazioni (somma, riporto, overflow = C4 ⊕ C3, sottrazione), decoder, multiplexer, encoder a priorità, segmenti del display.

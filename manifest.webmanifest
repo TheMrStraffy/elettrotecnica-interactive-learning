@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "Da Ohm a Karnaugh",
+  "short_name": "Ohm–Karnaugh",
+  "description": "Ripasso interattivo di elettrotecnica ed elettronica dalla 1ª alla 5ª: lezioni con laboratori da toccare, esercizi sempre nuovi corretti in automatico, funziona anche offline.",
+  "lang": "it",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1f4fd1",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Percorso", "short_name": "Percorso", "url": "./#percorso", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Generatore di esercizi", "short_name": "Generatore", "url": "./#cc-generatore", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Sfide", "short_name": "Sfide", "url": "./#sfide", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

@@ -1896,3 +1896,44 @@ svg.msi { display: block; width: 100%; height: auto; margin-inline: auto; }
 .chart .band { fill: var(--pen-soft); opacity: 0.8; }
 
 .chart .asym { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-dasharray: 6 4; }
+
+/* ---------- L'app: aggiornamenti, installazione, backup ---------- */
+
+.update-bar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(560px, calc(100vw - 32px));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.55);
+}
+
+.update-bar span { flex: 1 1 220px; font-weight: 600; }
+
+.update-bar .btn.ghost { color: var(--paper); border-color: color-mix(in srgb, var(--paper) 45%, transparent); background: transparent; }
+
+.app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: start; }
+
+.app-grid .card p { margin: 0 0 10px; }
+
+.app-ok { color: var(--ok, var(--pen)); font-weight: 700; }
+
+.app-how { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+
+.tab.install-ready { color: var(--pen); }
+
+.tab.install-ready small { color: var(--energy); }
+
+.foot a { color: inherit; }
+
+/* con la barra degli aggiornamenti gli avvisi salgono sopra */
+body:has(.update-bar) .toast-host { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }

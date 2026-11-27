@@ -2,9 +2,11 @@
   "name": "da-ohm-a-karnaugh",
   "version": "1.0.0",
   "private": true,
-  "description": "Ripasso interattivo di elettrotecnica ed elettronica digitale per la 3ª e 4ª superiore",
+  "description": "Ripasso interattivo di elettrotecnica ed elettronica dalla 1ª alla 5ª superiore, installabile come app",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "build": "node tools/build-single.mjs"
+    "build": "node tools/build-sw.js && node tools/build-single.mjs",
+    "sw": "node tools/build-sw.js",
+    "icons": "node tools/icons.mjs"
   }
 }
