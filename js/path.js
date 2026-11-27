@@ -31,14 +31,14 @@
     {
       n: '4ª', title: 'Quarto anno', sub: 'Corrente alternata, componenti attivi, logica sequenziale',
       units: [
-        { title: 'Corrente alternata e fasori', desc: 'Sinusoidi, valore efficace, fasori e numeri complessi.', soon: 4 },
-        { title: 'Impedenza, circuiti RLC e risonanza', desc: 'Reattanze, triangolo delle impedenze, risonanza serie e parallelo.', soon: 4 },
-        { title: 'Potenze in alternata e rifasamento', desc: 'Potenza attiva, reattiva, apparente; fattore di potenza.', soon: 4 },
+        { unit: 'ac' },
+        { unit: 'rlc' },
+        { unit: 'pot' },
+        { unit: 'bode' },
         { title: 'Diodi e raddrizzatori', desc: 'Caratteristica, retta di carico, raddrizzatori a una e due semionde, Zener.', soon: 4 },
         { title: 'Transistor BJT e MOSFET', desc: 'Polarizzazione, transistor come interruttore e come amplificatore.', soon: 4 },
         { title: 'Amplificatori operazionali', desc: 'Invertente, non invertente, sommatore, differenziale, comparatore.', soon: 4 },
         { title: 'Logica sequenziale', desc: 'Latch, flip-flop, contatori, registri a scorrimento.', soon: 4 },
-        { title: 'Filtri passivi e diagrammi di Bode', desc: 'Passa-basso e passa-alto RC, frequenza di taglio, decibel.', soon: 4 },
       ],
     },
     {
