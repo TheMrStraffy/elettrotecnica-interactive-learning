@@ -314,6 +314,27 @@
     return frame(470, 262, o.real ? 'Generatore reale con carico' : 'Equivalente di Thevenin', s);
   };
 
+  /** R1 in serie al parallelo R2 // R3 (generatore di esercizi). */
+  T.mix3 = (p, o = {}) => {
+    let s = gen(70, 140, 'E', p.E);
+    s += wire('M70 122 V50 H142 M198 50 H420 V112 M270 50 V112 M270 168 V230 M420 168 V230 H70 V158');
+    s += resH(170, 50, 'R_1', p.R1) + resV(270, 140, 'R_2', p.R2) + resV(420, 140, 'R_3', p.R3);
+    s += dot(270, 50) + dot(270, 230) + nodeLbl(270, 38, 'A') + nodeLbl(284, 252, 'B', 'start');
+    if (showArrows(o)) s += arrow(110, 50, 'r', 'I', cur(o, 'I')) + arrow(270, 84, 'd', 'I_2', cur(o, 'I2')) + arrow(420, 84, 'd', 'I_3', cur(o, 'I3'));
+    return frame(520, 262, 'Circuito misto', s);
+  };
+
+  /** Rete E-R1-R2-R3 con il carico RL tra A e B (generatore di esercizi su Thevenin). */
+  T.thevNet = (p, o = {}) => {
+    let s = wire('M70 122 V50 H142 M198 50 H342 M398 50 H456 M270 50 V112 M270 168 V230 M70 158 V230 H456');
+    s += gen(70, 140, 'E', p.E) + resH(170, 50, 'R_1', p.R1) + resV(270, 140, 'R_2', p.R2) + resH(370, 50, 'R_3', p.R3);
+    s += `<rect class="dashbox" x="36" y="18" width="438" height="244" rx="6"/><text class="small" x="48" y="256">rete da sostituire con l'equivalente</text>`;
+    s += dot(270, 50) + dot(270, 230) + term(460, 50) + term(460, 230) + nodeLbl(452, 38, 'A', 'end') + nodeLbl(452, 250, 'B', 'end');
+    s += wire('M464 50 H570 V112 M570 168 V230 H464') + resV(570, 140, 'R_L', p.RL);
+    if (showArrows(o)) s += arrow(522, 50, 'r', 'I_L', cur(o, 'IL'));
+    return frame(660, 270, 'Rete con carico tra A e B', s);
+  };
+
   /** Triangolo (a sinistra) e stella equivalente (a destra). */
   T.deltaStar = (p, o = {}) => {
     let s = '';
@@ -365,6 +386,67 @@
       (o.extra ? `<text class="vlbl" x="${left ? cx - 16 : cx + 16}" y="${cy + 30}" text-anchor="${left ? 'end' : 'start'}">${o.extra}</text>` : '');
   }
 
+  /** Induttore su un filo orizzontale: da cx−28 a cx+28. */
+  function indH(cx, cy, name, val, o = {}) {
+    let d = `M${cx - 20} ${cy}`;
+    for (let k = 0; k < 4; k++) d += ' a5 5 0 0 1 10 0';
+    return wire(`M${cx - 28} ${cy} H${cx - 20} M${cx + 20} ${cy} H${cx + 28}`) + `<path class="coil" d="${d}"/>` +
+      `<text x="${cx}" y="${cy - 14}" text-anchor="middle">${nm(name)}</text>` +
+      (val != null ? `<text class="val" x="${cx}" y="${cy + 24}" text-anchor="middle">${fmtL(val)}</text>` : '') +
+      (o.extra ? `<text class="vlbl" x="${cx}" y="${cy + 40}" text-anchor="middle">${o.extra}</text>` : '');
+  }
+
+  /** Generatore sinusoidale. */
+  function acGen(cx, cy, name, val, o = {}) {
+    const left = o.side !== 'right';
+    return `<circle class="comp" cx="${cx}" cy="${cy}" r="18"/><path class="wire" d="M${cx - 11} ${cy} q5.5 -13 11 0 t11 0" style="stroke-width:1.8"/>` +
+      label(left ? cx - 26 : cx + 26, cy - 3, name, val == null ? null : typeof val === 'string' ? val : si(val, 'V'), left ? 'end' : 'start');
+  }
+
+  const fmtAny = (k, v) => (k === 'L' ? fmtL(v) : k === 'C' ? fmtC(v) : fmtR(v));
+  /** Componente orizzontale o verticale secondo il tipo: R, L, C. */
+  const partH = (q, cx, cy) => (q.k === 'L' ? indH : q.k === 'C' ? capH : resH)(cx, cy, q.name, q.val, { extra: q.extra });
+  const partV = (q, cx, cy, side) => (q.k === 'L' ? indV : q.k === 'C' ? capV : resV)(cx, cy, q.name, q.val, { side, extra: q.extra });
+
+  /** Circuito serie in alternata: p.parts = [{ k: 'R'|'L'|'C', name, val, extra }], p.V = valore del generatore. */
+  T.acSeries = (p, o = {}) => {
+    const n = p.parts.length;
+    const xs = n === 1 ? [300] : n === 2 ? [210, 370] : [170, 290, 410];
+    let d = 'M70 122 V50';
+    xs.forEach((x) => { d += ` H${x - 28} M${x + 28} 50`; });
+    d += ' H480 V230 H70 V158';
+    let s = wire(d) + acGen(70, 140, 'V', p.V);
+    p.parts.forEach((q, k) => { s += partH(q, xs[k], 50); });
+    if (o.arrows !== false) s += arrow(110, 50, 'r', 'I', o.I != null ? o.I : null);
+    return frame(540, 262, 'Circuito serie in alternata', s);
+  };
+
+  /** Rami in parallelo su un generatore sinusoidale. */
+  T.acParallel = (p, o = {}) => {
+    const n = p.parts.length;
+    const xs = n === 2 ? [250, 410] : [210, 340, 470];
+    const last = xs[n - 1];
+    let s = wire(`M70 122 V45 H${last} M70 158 V230 H${last}`) + acGen(70, 140, 'V', p.V);
+    p.parts.forEach((q, k) => {
+      const x = xs[k];
+      s += wire(`M${x} 45 V112 M${x} 168 V230`) + partV(q, x, 140);
+      if (k < n - 1) s += dot(x, 45) + dot(x, 230);
+      if (o.arrows !== false) s += arrow(x, 82, 'd', 'I_' + q.k, null);
+    });
+    if (o.arrows !== false) s += arrow(140, 45, 'r', 'I', null);
+    return frame(n === 3 ? 580 : 520, 262, 'Rami in parallelo in alternata', s);
+  };
+
+  /** Filtro del primo ordine: elemento in serie (sopra) ed elemento verso massa; ingresso a sinistra, uscita a destra. */
+  T.filter = (p, o = {}) => {
+    let s = wire('M64 50 H142 M198 50 H360 M270 50 V112 M270 168 V230 M64 230 H360');
+    s += term(60, 50) + term(60, 230) + term(364, 50) + term(364, 230) + dot(270, 50) + dot(270, 230);
+    s += partH(p.ser, 170, 50) + partV(p.sh, 270, 140, 'left');
+    s += `<path class="varrow" d="M40 222 V58"/><polygon class="vhead" points="35,64 40,54 45,64"/>` + label(32, 146, 'V_in', o.vin, 'end');
+    s += `<path class="varrow" d="M384 222 V58"/><polygon class="vhead" points="379,64 384,54 389,64"/>` + label(394, 146, 'V_out', o.vout, 'start');
+    return frame(480, 262, 'Filtro del primo ordine', s);
+  };
+
   /** Circuito RC (o RL) con deviatore: posizione 1 = carica dal generatore, 2 = scarica a massa. */
   T.rc = (p, o = {}) => {
     const isL = o.kind === 'L';
@@ -409,5 +491,5 @@
     return frame(612, 262, 'Rete di condensatori', s);
   };
 
-  App.Schem = { T, nm, capV, capH, indV };
+  App.Schem = { T, nm, capV, capH, indV, indH, acGen };
 })();

@@ -18,6 +18,12 @@
 
   // ---------- Controllo delle risposte ----------
   const FACT = { A: 1, mA: 1e-3, 'µA': 1e-6, V: 1, mV: 1e-3, kV: 1e3, 'Ω': 1, 'kΩ': 1e3, 'MΩ': 1e6, W: 1, mW: 1e-3, kW: 1e3, S: 1, mS: 1e-3 };
+  /** Fattore di un'unità con prefisso (kHz, µF, kvar…): la risposta "4,7µ" scritta in µF vale 4,7. */
+  function factOf(unit) {
+    if (FACT[unit] != null) return FACT[unit];
+    const m = String(unit || '').match(/^([GMkmµnp])(.+)$/);
+    return m ? { G: 1e9, M: 1e6, k: 1e3, m: 1e-3, 'µ': 1e-6, n: 1e-9, p: 1e-12 }[m[1]] : unit ? 1 : null;
+  }
 
   function checkNum(ask, raw) {
     const s = String(raw).trim();
@@ -27,7 +33,7 @@
     if (/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(bare)) got = Number(bare);
     else {
       const v = App.parseNum(s);
-      const f = FACT[ask.unit];
+      const f = factOf(ask.unit);
       if (!isFinite(v) || !f) return { state: 'format' };
       got = v / f;
     }
