@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Da Ohm a Karnaugh</title>
-<meta name="description" content="Ripasso interattivo di elettrotecnica ed elettronica digitale per la 3ª e 4ª superiore: legge di Ohm, resistori, reti, numeri binari, porte logiche, mappe di Karnaugh.">
+<meta name="description" content="Ripasso interattivo di elettrotecnica ed elettronica dalla 1ª alla 5ª superiore: lezioni con laboratori da toccare ed esercizi sempre nuovi corretti in automatico. Funziona anche offline.">
+<meta name="theme-color" content="#1f4fd1">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
@@ -34,12 +39,14 @@
     <span class="tabs-spacer"></span>
     <button class="tab" type="button" data-route="sfide"><small>★</small>Sfide</button>
     <button class="tab" type="button" data-route="formulario"><small>Σ</small>Formulario</button>
+    <button class="tab" type="button" id="tab-app" data-route="app"><small>⚙</small>App</button>
   </div>
 </nav>
 
 <main class="wrap">
 
 <section class="panel" id="percorso" hidden></section>
+<section class="panel" id="app" hidden></section>
 
 <div class="unit-view" id="unit-view" hidden>
   <p class="unit-title sr-only"></p>
@@ -1078,7 +1085,7 @@
 <div id="parking" hidden></div>
 
 <footer class="foot">
-  <div class="wrap">Da Ohm a Karnaugh · ripasso per istituti tecnici, indirizzo Elettronica ed Elettrotecnica, dalla 1ª alla 5ª. Funziona anche offline: apri <span class="mono">index.html</span> nel browser.</div>
+  <div class="wrap">Da Ohm a Karnaugh · ripasso per istituti tecnici, indirizzo Elettronica ed Elettrotecnica, dalla 1ª alla 5ª. Funziona anche offline: <a href="#app" data-route="app">installa l'app e salva i progressi</a>.</div>
 </footer>
 
 <script src="js/core.js"></script>
@@ -1112,5 +1119,6 @@
 <script src="js/units/q-pot.js"></script>
 <script src="js/units/q-bode.js"></script>
 <script src="js/path.js"></script>
+<script src="js/pwa.js"></script>
 </body>
 </html>

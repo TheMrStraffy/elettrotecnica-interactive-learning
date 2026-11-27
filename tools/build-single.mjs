@@ -9,6 +9,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(root, p), 'utf8');
 
 let html = read('index.html');
+// il file unico non è un'app installabile: niente manifest né icone esterne (la favicon va incorporata)
+html = html.replace(/<link rel="manifest"[^>]*>\s*/, '').replace(/<link rel="apple-touch-icon"[^>]*>\s*/, '').replace(/<link rel="icon" href="icons\/favicon-32\.png"[^>]*>\s*/, '');
+html = html.replace(/<link rel="icon" href="icons\/icon\.svg" type="image\/svg\+xml">/, () => `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(read('icons/icon.svg'))}">`);
 html = html.replace(/<link rel="stylesheet" href="css\/style\.css">/, () => `<style>\n${read('css/style.css')}\n</style>`);
 html = html.replace(/<script src="(js\/[\w\/-]+\.js)"><\/script>/g, (_, src) => `<script>\n${read(src)}\n</script>`);
 

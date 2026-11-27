@@ -57,7 +57,7 @@
   ];
 
   const units = () => Object.fromEntries((App.unitsData || []).map((u) => [u.id, u]));
-  const SECTION_ROUTES = ['circuito', 'resistori', 'binario', 'porte', 'karnaugh', 'sfide', 'formulario'];
+  const SECTION_ROUTES = ['circuito', 'resistori', 'binario', 'porte', 'karnaugh', 'sfide', 'formulario', 'app'];
   const SECTION_INFO = {
     circuito: ['1ª–2ª', 'Il circuito elementare'], resistori: ['1ª–2ª', 'Resistori e resistività'],
     binario: ['3ª', 'Sistemi di numerazione'], porte: ['3ª', 'Porte logiche e circuiti'], karnaugh: ['3ª', 'Algebra di Boole e Karnaugh'],
@@ -187,7 +187,7 @@
 
   function markTabs(route) {
     document.querySelectorAll('.tabs .tab').forEach((t) => {
-      const on = t.id === 'tab-current' ? !t.hidden && !['percorso', 'sfide', 'formulario'].includes(route) : t.dataset.route === route;
+      const on = t.id === 'tab-current' ? !t.hidden && !['percorso', 'sfide', 'formulario', 'app'].includes(route) : t.dataset.route === route;
       if (on) t.setAttribute('aria-current', 'page');
       else t.removeAttribute('aria-current');
     });
