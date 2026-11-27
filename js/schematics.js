@@ -491,5 +491,191 @@
     return frame(612, 262, 'Rete di condensatori', s);
   };
 
-  App.Schem = { T, nm, capV, capH, indV, indH, acGen };
+
+  // ---------- Semiconduttori e operazionali ----------
+
+  /**
+   * Corpo di un diodo centrato in (cx, cy), orientato secondo ang (gradi: 0 = verso destra, 90 = verso il basso).
+   * kind: 'd' (diodo), 'z' (Zener), 'led'. on: in conduzione (evidenziato). Occupa ±12 lungo la direzione.
+   */
+  function diodeBody(cx, cy, ang, kind = 'd', on = false) {
+    let g = `<path class="dio${on ? ' on' : ''}" d="M${cx - 10} ${cy - 11} L${cx - 10} ${cy + 11} L${cx + 10} ${cy} Z"/>`;
+    g += kind === 'z'
+      ? `<path class="wire" d="M${cx + 5} ${cy - 15} L${cx + 10} ${cy - 11} V${cy + 11} L${cx + 15} ${cy + 15}"/>`
+      : `<path class="wire" d="M${cx + 10} ${cy - 11} V${cy + 11}"/>`;
+    g += `<path class="wire" d="M${cx - 12} ${cy} H${cx - 10} M${cx + 10} ${cy} H${cx + 12}"/>`;
+    if (kind === 'led') {
+      const ray = (x, y) => `<path class="ray" d="M${x} ${y} l9 -9 m-5 0 h5 v5"/>`;
+      g += `<g class="${on ? 'ray-on' : ''}">${ray(cx + 2, cy - 12)}${ray(cx + 9, cy - 8)}</g>`;
+    }
+    return `<g transform="rotate(${ang} ${cx} ${cy})">${g}</g>`;
+  }
+  /** Diodo su un filo orizzontale (da cx−28 a cx+28); dir 'r' = conduce verso destra. */
+  function diodeH(cx, cy, name, val, o = {}) {
+    return wire(`M${cx - 28} ${cy} H${cx - 12} M${cx + 12} ${cy} H${cx + 28}`) + diodeBody(cx, cy, o.dir === 'l' ? 180 : 0, o.kind, o.on) +
+      `<text x="${cx}" y="${cy - 20}" text-anchor="middle">${nm(name)}</text>` + (val != null ? `<text class="val" x="${cx}" y="${cy + 28}" text-anchor="middle">${val}</text>` : '');
+  }
+  /** Diodo su un filo verticale (da cy−28 a cy+28); dir 'd' = conduce verso il basso. */
+  function diodeV(cx, cy, name, val, o = {}) {
+    const left = o.side === 'left';
+    return wire(`M${cx} ${cy - 28} V${cy - 12} M${cx} ${cy + 12} V${cy + 28}`) + diodeBody(cx, cy, o.dir === 'u' ? 270 : 90, o.kind, o.on) +
+      label(left ? cx - 20 : cx + 20, cy - 4, name, val, left ? 'end' : 'start');
+  }
+
+  /** Transistor NPN: base a (cx−40, cy), collettore (cx+10, cy−36), emettitore (cx+10, cy+36). */
+  function npn(cx, cy, name, o = {}) {
+    const st = o.state ? ' ' + o.state : '';
+    let s = `<circle class="comp bjt${st}" cx="${cx}" cy="${cy}" r="24"/>`;
+    s += wire(`M${cx - 40} ${cy} H${cx - 9} M${cx - 9} ${cy - 15} V${cy + 15} M${cx - 9} ${cy - 7} L${cx + 10} ${cy - 20} V${cy - 36} M${cx - 9} ${cy + 7} L${cx + 10} ${cy + 20} V${cy + 36}`);
+    s += `<polygon class="ahead" points="${cx + 10},${cy + 20} ${cx - 1},${cy + 19} ${cx + 5},${cy + 11}"/>`;
+    if (name) s += `<text x="${cx + 30}" y="${cy + 5}">${nm(name)}</text>`;
+    if (o.pins) s += `<text class="small" x="${cx - 36}" y="${cy - 6}">B</text><text class="small" x="${cx + 15}" y="${cy - 26}">C</text><text class="small" x="${cx + 15}" y="${cy + 34}">E</text>`;
+    return s;
+  }
+  /** MOSFET a canale n ad arricchimento: gate (cx−40, cy), drain (cx+10, cy−36), source (cx+10, cy+36). */
+  function nmos(cx, cy, name, o = {}) {
+    const st = o.state ? ' ' + o.state : '';
+    let s = `<circle class="comp bjt${st}" cx="${cx}" cy="${cy}" r="24"/>`;
+    s += wire(`M${cx - 40} ${cy + 10} H${cx - 12} M${cx - 12} ${cy - 14} V${cy + 14}`);
+    s += wire(`M${cx - 5} ${cy - 16} V${cy - 8} M${cx - 5} ${cy - 4} V${cy + 4} M${cx - 5} ${cy + 8} V${cy + 16}`);
+    s += wire(`M${cx - 5} ${cy - 12} H${cx + 10} V${cy - 36} M${cx - 5} ${cy + 12} H${cx + 10} V${cy + 36} M${cx + 10} ${cy} V${cy + 12} M${cx - 5} ${cy} H${cx + 10}`);
+    s += `<polygon class="ahead" points="${cx - 4},${cy} ${cx + 4},${cy - 4} ${cx + 4},${cy + 4}"/>`;
+    if (name) s += `<text x="${cx + 30}" y="${cy + 5}">${nm(name)}</text>`;
+    if (o.pins) s += `<text class="small" x="${cx - 36}" y="${cy + 4}">G</text><text class="small" x="${cx + 15}" y="${cy - 26}">D</text><text class="small" x="${cx + 15}" y="${cy + 34}">S</text>`;
+    return s;
+  }
+  /** Morsetto con etichetta (ingresso o uscita). */
+  function port(x, y, name, val, anchor = 'end') {
+    return term(x, y) + label(anchor === 'end' ? x - 10 : x + 10, y - 2, name, val, anchor);
+  }
+  /** Alimentazione positiva: una barretta con l'etichetta. */
+  function rail(x, y, text) {
+    return wire(`M${x - 12} ${y} H${x + 12}`) + `<text class="small" x="${x}" y="${y - 7}" text-anchor="middle">${text}</text>`;
+  }
+  /** Operazionale: lato sinistro in x, centro in y; ingressi a y−20 e y+20, uscita a (x+80, y). plusTop: + in alto. */
+  function opamp(x, y, o = {}) {
+    const top = o.plusTop ? '+' : '−';
+    const bot = o.plusTop ? '−' : '+';
+    return `<path class="comp" d="M${x} ${y - 42} L${x} ${y + 42} L${x + 80} ${y} Z"/>` +
+      `<text class="pm" x="${x + 9}" y="${y - 15}">${top}</text><text class="pm" x="${x + 9}" y="${y + 26}">${bot}</text>`;
+  }
+
+  /** E – R – diodo (o LED) verso massa. p: { E, R, kind, D, rev } */
+  T.dioSeries = (p, o = {}) => {
+    let s = wire('M70 122 V50 H172 M228 50 H340 V112 M340 168 V230 H70 V158');
+    s += gen(70, 140, 'E', p.E) + resH(200, 50, 'R', p.R) + diodeV(340, 140, p.name || (p.kind === 'led' ? 'LED' : 'D'), p.D, { kind: p.kind, dir: p.rev ? 'u' : 'd', on: o.on });
+    if (o.arrows !== false) s += arrow(270, 50, 'r', 'I', o.I != null ? o.I : null);
+    return frame(470, 262, 'Diodo in serie a un resistore', s);
+  };
+
+  /** Raddrizzatore a una semionda, con condensatore di livellamento facoltativo. */
+  T.halfWave = (p, o = {}) => {
+    let s = wire('M70 122 V50 H172 M228 50 H420 V112 M420 168 V230 H70 V158');
+    s += acGen(70, 140, 'v_s', p.V) + diodeH(200, 50, 'D', null, { on: o.on });
+    s += resV(420, 140, 'R_L', p.RL);
+    if (p.C != null) s += wire('M300 50 V112 M300 168 V230') + capV(300, 140, 'C', p.C) + dot(300, 50) + dot(300, 230);
+    s += term(500, 50) + term(500, 230) + wire('M420 50 H496 M420 230 H496') + label(510, 146, 'v_o', null, 'start');
+    return frame(580, 262, 'Raddrizzatore a una semionda', s);
+  };
+
+  /** Ponte di Graetz con carico (e condensatore facoltativo); o.half: 'pos' | 'neg' evidenzia i diodi in conduzione. */
+  T.bridge = (p, o = {}) => {
+    const Tn = [230, 40];
+    const Rn = [310, 140];
+    const Bn = [230, 240];
+    const Ln = [150, 140];
+    const pos = o.half === 'pos';
+    const neg = o.half === 'neg';
+    const seg = (a, b, name, on, lx, ly) => {
+      const cx = (a[0] + b[0]) / 2;
+      const cy = (a[1] + b[1]) / 2;
+      const ang = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
+      const ux = Math.cos((ang * Math.PI) / 180);
+      const uy = Math.sin((ang * Math.PI) / 180);
+      return wire(`M${a[0]} ${a[1]} L${cx - 12 * ux} ${cy - 12 * uy} M${cx + 12 * ux} ${cy + 12 * uy} L${b[0]} ${b[1]}`) + diodeBody(cx, cy, ang, 'd', on) +
+        `<text x="${cx + lx}" y="${cy + ly}" text-anchor="middle">${nm(name)}</text>`;
+    };
+    let s = acGen(70, 140, 'v_s', p.V) + wire(`M70 122 V40 H${Tn[0]} M70 158 V240 H${Bn[0]}`);
+    s += seg(Tn, Rn, 'D_1', pos, -18, 26) + seg(Bn, Rn, 'D_2', neg, -18, -12) + seg(Ln, Bn, 'D_3', pos, 18, -12) + seg(Ln, Tn, 'D_4', neg, 18, 26);
+    s += dot(...Tn) + dot(...Rn) + dot(...Bn) + dot(...Ln);
+    s += wire(`M${Rn[0]} ${Rn[1]} H420 V162 M420 218 V240`) + resV(420, 190, 'R_L', p.RL) + ground(420, 240) + wire(`M${Ln[0]} ${Ln[1]} V204`) + ground(150, 204);
+    if (p.C != null) s += wire('M420 140 H500 V162 M500 218 V240') + capV(500, 190, 'C', p.C) + ground(500, 240) + dot(420, 140);
+    s += `<text class="small" x="${p.C != null ? 470 : 440}" y="128" text-anchor="middle">+ v<tspan class="sb" dy="3">o</tspan></text>`;
+    return frame(p.C != null ? 600 : 520, 280, 'Raddrizzatore a ponte di Graetz', s);
+  };
+
+  /** Stabilizzatore con Zener: Vin – Rs – (Zener ∥ RL). */
+  T.zener = (p, o = {}) => {
+    let s = wire('M70 122 V50 H172 M228 50 H420 V112 M300 50 V112 M300 168 V230 M420 168 V230 H70 V158');
+    s += gen(70, 140, 'V_in', p.Vin) + resH(200, 50, 'R_s', p.Rs) + diodeV(300, 140, 'D_z', p.Vz, { kind: 'z', dir: 'u', on: o.on }) + resV(420, 140, 'R_L', p.RL);
+    s += dot(300, 50) + dot(300, 230);
+    if (o.arrows !== false) s += arrow(266, 50, 'r', 'I_s', o.Is) + arrow(300, 92, 'd', 'I_z', o.Iz, { side: 'left' }) + arrow(420, 84, 'd', 'I_L', o.IL);
+    return frame(540, 262, 'Stabilizzatore con diodo Zener', s);
+  };
+
+  /** Transistor (BJT o MOSFET) come interruttore: Vin – RB – base; carico (RC o LED + R) verso VCC. */
+  T.switch = (p, o = {}) => {
+    const mos = p.mos;
+    let s = rail(310, 26, p.VCC != null ? '+' + si(p.VCC, 'V') : '+V<tspan dy="3" class="sb">CC</tspan>');
+    if (p.led) s += wire('M310 26 V36 M310 92 V100 M310 156 V164') + resV(310, 64, 'R_C', p.RC) + diodeV(310, 128, 'LED', null, { kind: 'led', on: o.on });
+    else s += wire('M310 26 V62 M310 118 V164') + resV(310, 90, p.load || 'R_C', p.RC);
+    s += mos ? nmos(300, 200, 'M', { pins: true, state: o.state }) : npn(300, 200, 'Q', { pins: true, state: o.state });
+    s += wire(`M310 236 V250`) + ground(310, 250);
+    s += wire(`M128 ${mos ? 210 : 200} H${mos ? 260 : 172} ${mos ? '' : 'M228 200 H260'}`);
+    if (!mos) s += resH(200, 200, 'R_B', p.RB);
+    s += port(124, mos ? 210 : 200, 'V_in', p.Vin != null ? si(p.Vin, 'V') : null);
+    return frame(440, 290, mos ? 'MOSFET come interruttore' : 'Transistor come interruttore', s);
+  };
+
+  /** Polarizzazione a partitore: R1, R2 sulla base, RC sul collettore, RE sull'emettitore. */
+  T.bjtBias = (p, o = {}) => {
+    let s = rail(150, 24, '+' + (p.VCC != null ? si(p.VCC, 'V') : 'V<tspan dy="3" class="sb">CC</tspan>')) + wire('M150 24 H270');
+    s += wire('M150 24 V62 M150 118 V222 M150 278 V296 M150 170 H220') + resV(150, 90, 'R_1', p.R1, { side: 'left' }) + resV(150, 250, 'R_2', p.R2, { side: 'left' }) + ground(150, 296) + dot(150, 170);
+    s += wire('M270 24 V62 M270 118 V134 M270 206 V222 M270 278 V296') + resV(270, 90, 'R_C', p.RC) + resV(270, 250, 'R_E', p.RE) + ground(270, 296);
+    s += npn(260, 170, null, { state: o.state });
+    if (o.VB != null) s += `<text class="vlbl" x="160" y="186">V<tspan class="sb" dy="3">B</tspan><tspan dy="-3"> = ${si(o.VB, 'V')}</tspan></text>`;
+    if (o.VE != null) s += `<text class="vlbl" x="290" y="222">V<tspan class="sb" dy="3">E</tspan><tspan dy="-3"> = ${si(o.VE, 'V')}</tspan></text>`;
+    if (o.VC != null) s += `<text class="vlbl" x="290" y="130">V<tspan class="sb" dy="3">C</tspan><tspan dy="-3"> = ${si(o.VC, 'V')}</tspan></text>`;
+    if (o.IC != null) s += arrow(270, 126, 'd', 'I_C', o.IC, { side: 'left' });
+    return frame(420, 320, 'Polarizzazione a partitore', s);
+  };
+
+  /** Operazionale nelle configurazioni tipiche. p.kind: inv | noninv | follower | sum | diff | comp. */
+  T.opamp = (p, o = {}) => {
+    const k = p.kind;
+    const X = 220;
+    const Y = 140;
+    const v = (q) => (p[q] == null ? null : typeof p[q] === 'string' ? p[q] : si(p[q], 'Ω'));
+    const vv = (q) => (p[q] == null ? null : typeof p[q] === 'string' ? p[q] : si(p[q], 'V'));
+    let s = opamp(X, Y);
+    s += wire(`M${X + 80} ${Y} H400`) + dot(330, Y) + port(404, Y, 'V_out', o.Vout != null ? si(o.Vout, 'V') : null, 'start');
+    const fb = (rname) => wire(`M200 ${Y - 20} V50 H222 M278 50 H330 V${Y}`) + resH(250, 50, rname, v(rname.replace('_', ''))) + dot(200, Y - 20);
+    if (k === 'inv') {
+      s += port(56, Y - 20, 'V_in', vv('Vin')) + wire(`M60 ${Y - 20} H102 M158 ${Y - 20} H${X}`) + resH(130, Y - 20, 'R_1', v('R1')) + fb('R_f');
+      s += wire(`M${X} ${Y + 20} H205 V170`) + ground(205, 170);
+    } else if (k === 'noninv') {
+      s += fb('R_f') + wire(`M${X} ${Y - 20} H170 V${Y - 8}`) + resV(170, Y + 20, 'R_1', v('R1'), { side: 'left' }) + ground(170, Y + 48);
+      s += wire(`M${X} ${Y + 20} H205 V${Y + 90} H60`) + port(56, Y + 90, 'V_in', vv('Vin'));
+    } else if (k === 'follower') {
+      s += wire(`M${X} ${Y - 20} H200 V70 H330 V${Y}`) + dot(330, Y) + port(56, Y + 20, 'V_in', vv('Vin')) + wire(`M60 ${Y + 20} H${X}`);
+    } else if (k === 'sum') {
+      const ys = p.n === 4 ? [Y - 95, Y - 31, Y + 33, Y + 97] : [Y - 80, Y - 20, Y + 40];
+      ys.forEach((y, i) => {
+        s += port(56, y, 'V_' + (i + 1), vv('V' + (i + 1))) + wire(`M60 ${y} H102 M158 ${y} H180`) + resH(130, y, 'R_' + (i + 1), v('R' + (i + 1)));
+      });
+      s += wire(`M180 ${ys[0]} V${ys[ys.length - 1]} M180 ${Y - 20} H${X}`) + dot(180, Y - 20);
+      s += wire(`M200 ${Y - 20} V30 H222 M278 30 H330 V${Y}`) + resH(250, 30, 'R_f', v('Rf')) + dot(200, Y - 20);
+      s += wire(`M${X} ${Y + 20} H205 V${Y + 50}`) + ground(205, Y + 50);
+    } else if (k === 'diff') {
+      s += port(56, Y - 20, 'V_1', vv('V1')) + wire(`M60 ${Y - 20} H102 M158 ${Y - 20} H${X}`) + resH(130, Y - 20, 'R_1', v('R1')) + fb('R_2');
+      s += port(56, Y + 45, 'V_2', vv('V2')) + wire(`M60 ${Y + 45} H102 M158 ${Y + 45} H200 V${Y + 20} H${X} M200 ${Y + 45} V${Y + 67} M200 ${Y + 123} V${Y + 130}`) + resH(130, Y + 45, 'R_3', v('R3')) + resV(200, Y + 95, 'R_4', v('R4')) + ground(200, Y + 130) + dot(200, Y + 45);
+    } else {
+      s += port(56, Y - 20, 'V_ref', vv('Vref')) + wire(`M60 ${Y - 20} H${X}`) + port(56, Y + 20, 'V_in', vv('Vin')) + wire(`M60 ${Y + 20} H${X}`);
+    }
+    if (o.supply) s += `<text class="small" x="${X + 20}" y="${Y - 50}">+${o.supply} V</text><text class="small" x="${X + 20}" y="${Y + 60}">−${o.supply} V</text>`;
+    const H = k === 'diff' ? 300 : k === 'noninv' ? 260 : k === 'sum' ? (p.n === 4 ? 285 : 230) : 220;
+    return frame(500, H, 'Amplificatore operazionale', s);
+  };
+
+  App.Schem = { T, nm, capV, capH, indV, indH, acGen, diodeH, diodeV, diodeBody, npn, nmos, opamp, port, rail };
 })();
