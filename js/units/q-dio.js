@@ -175,7 +175,7 @@
     gen: () => ({ V: pick([6, 9, 12, 15, 18, 24]), f: pick([50, 50, 60]) }),
     solve: (p) => SM.rectifier('bridge', p.V, p.f),
     text: (p) => `Un ponte di Graetz è alimentato da ${p.V} V efficaci a ${p.f} Hz. Trova il picco in uscita, il valore medio (senza condensatore), la frequenza del ripple e la tensione inversa massima su ogni diodo.`,
-    fig: () => S.bridge({ V: '', RL: '' }, { half: 'pos' }),
+    fig: () => S.graetz({ V: '', RL: '' }, { half: 'pos' }),
     asks: (p, r) => [h.qV('<var>V</var><sub>p</sub>', r.Vp), h.qV('<var>V</var><sub>med</sub>', r.Vdc), Q.qHz('<var>f</var><sub>r</sub>', r.fr), h.qV('PIV', r.PIV)],
     steps: (p, r) => step(`<var>V</var><sub>m</sub> = √2 · ${p.V} = ${U(r.Vm, 'V')}; <var>V</var><sub>p</sub> = <var>V</var><sub>m</sub> − 2 · 0,7 = ${res(U(r.Vp, 'V'))}`, 'Nel ponte conducono sempre due diodi in serie: due cadute.') +
       step(`<var>V</var><sub>med</sub> = ${frac('2<var>V</var><sub>p</sub>', 'π')} = ${res(U(r.Vdc, 'V'))}`, 'Doppia semionda: tutte e due le metà del periodo arrivano al carico.') +
@@ -187,7 +187,7 @@
     gen: () => ({ half: pick(['pos', 'neg']), o: App.shuffle([0, 1, 2, 3]) }),
     solve: (p) => ({ ans: p.half === 'pos' ? 0 : 1 }),
     text: (p) => `Nel ponte in figura, durante la semionda ${p.half === 'pos' ? 'positiva (morsetto in alto del secondario positivo)' : 'negativa (morsetto in basso positivo)'}, quali diodi conducono?`,
-    fig: (p, r, sol) => S.bridge({ V: '', RL: '' }, { half: sol ? p.half : null }),
+    fig: (p, r, sol) => S.graetz({ V: '', RL: '' }, { half: sol ? p.half : null }),
     asks: (p) => { const opts = ['D1 e D3', 'D2 e D4', 'tutti e quattro', 'D1 e D2']; return [h.choice('Conducono', p.o.map((i) => opts[i]), p.o.indexOf(p.half === 'pos' ? 0 : 1))]; },
     steps: (p) => step(p.half === 'pos' ? 'La corrente esce dall\'alto, attraversa D1, il carico (dal + al −) e torna attraverso D3' : 'La corrente esce dal basso, attraversa D2, il carico (sempre dal + al −) e torna attraverso D4', 'In ogni semionda conducono due diodi opposti; nel carico la corrente ha sempre lo stesso verso.') + step(`Conducono ${res(p.half === 'pos' ? 'D1 e D3' : 'D2 e D4')}`),
   });
@@ -219,7 +219,7 @@
       const drops = kind === 'bridge' ? 1.4 : 0.7;
       const fn = (t) => { const x = r.Vm * Math.sin(2 * Math.PI * 50 * t); const y = kind === 'half' ? x : Math.abs(x); return Math.max(0, y - drops); };
       const ymax = K.niceMax(r.Vm * 1.1);
-      sch.innerHTML = (kind === 'bridge' ? S.bridge({ V: v.V + ' V', RL: '' }, { half }) : S.halfWave({ V: v.V + ' V', RL: '' }, { on: half === 'pos' })).svg;
+      sch.innerHTML = (kind === 'bridge' ? S.graetz({ V: v.V + ' V', RL: '' }, { half }) : S.halfWave({ V: v.V + ' V', RL: '' }, { on: half === 'pos' })).svg;
       wave.innerHTML = Q.waveSVG({ W: 520, H: 210, tmax: 0.04, ymax, traces: [{ amp: r.Vm, f: 50, deg: 0, cls: 'ref', dash: true }, { fn, cls: 'gen' }], hl: [{ y: r.Vdc, cls: 'p2', label: 'media' }], title: 'Tensione raddrizzata' });
       out.innerHTML = `<div class="form-row"><span class="label">Uscita</span><div class="f"><var>V</var><sub>p</sub> = ${U(r.Vp, 'V')}; <var>V</var><sub>med</sub> = ${res(U(r.Vdc, 'V'))}</div><span class="meta">Ripple a ${r.fr} Hz; PIV su ogni diodo ${U(r.PIV, 'V')}.</span></div>
         <div class="form-row"><span class="label">${half === 'pos' ? 'Semionda positiva' : 'Semionda negativa'}</span><div class="f">${kind === 'half' ? (half === 'pos' ? 'Il diodo conduce: l\'uscita segue la tensione del secondario.' : 'Il diodo è interdetto: l\'uscita è zero.') : half === 'pos' ? 'Conducono D1 e D3.' : 'Conducono D2 e D4: la corrente nel carico ha lo stesso verso.'}</div></div>`;

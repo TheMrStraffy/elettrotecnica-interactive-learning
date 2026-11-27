@@ -530,7 +530,7 @@
 
   App.unitsData = App.unitsData || [];
   App.unitsData.push({
-    id: 'alg', year: '1–2', yearLabel: '1ª–2ª', title: 'Formule inverse, equazioni e sistemi', route: 'alg-inverse', lessonWord: 'Lezione',
+    id: 'alg', year: '1', yearLabel: '1ª', title: 'Formule inverse, equazioni e sistemi', route: 'alg-inverse', lessonWord: 'Lezione',
     desc: 'Rigirare le formule, riconoscere le proporzionalità, risolvere equazioni e sistemi 2×2: l\'algebra che serve per Kirchhoff.',
     lessons,
   });

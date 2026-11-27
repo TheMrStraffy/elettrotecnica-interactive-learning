@@ -631,7 +631,7 @@
 
   App.unitsData = App.unitsData || [];
   App.unitsData.push({
-    id: 'mis', year: '1–2', yearLabel: '1ª–2ª', title: 'Grandezze, unità e notazione scientifica', route: 'mis-si', lessonWord: 'Lezione',
+    id: 'mis', year: '1', yearLabel: '1ª', title: 'Grandezze, unità e notazione scientifica', route: 'mis-si', lessonWord: 'Lezione',
     desc: 'Sistema Internazionale, prefissi da giga a pico, notazione scientifica, cifre significative ed errori.',
     lessons,
   });

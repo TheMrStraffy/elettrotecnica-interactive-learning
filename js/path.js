@@ -7,13 +7,22 @@
   // Unità del percorso. route: dove porta; soon: in arrivo (con la fase prevista).
   const YEARS = [
     {
-      n: '1ª–2ª', title: 'Biennio', sub: 'Le basi: grandezze elettriche, circuito elementare, resistori',
+      n: '1ª', title: 'Primo anno', sub: 'Gli attrezzi: misure e unità, calcolo con le formule, lavoro ed energia',
       units: [
-        { title: 'Il circuito elementare', desc: 'Carica, corrente, tensione e f.e.m.; generatore reale, legge di Ohm, potenza ed effetto Joule.', route: 'circuito', kind: 'Laboratorio' },
-        { title: 'Resistori e resistività', desc: 'Codice colori a 4 e 5 fasce, seconda legge di Ohm, materiali e temperatura.', route: 'resistori', kind: 'Laboratorio' },
         { unit: 'mis' },
         { unit: 'alg' },
+        { unit: 'ene' },
+      ],
+    },
+    {
+      n: '2ª', title: 'Secondo anno', sub: 'L\'elettricità: dalla carica al circuito, resistori, misure e sicurezza',
+      units: [
         { unit: 'elt' },
+        { unit: 'cir' },
+        { unit: 'res' },
+        { unit: 'msr' },
+        { title: 'Laboratorio: il circuito elementare', desc: 'Generatore reale con interruttore, amperometro e voltmetro, cariche animate, cortocircuito, missioni.', route: 'circuito', kind: 'Laboratorio' },
+        { title: 'Laboratorio: resistori', desc: 'Codice colori con il gioco "leggi il resistore", seconda legge di Ohm con materiali e temperatura.', route: 'resistori', kind: 'Laboratorio' },
       ],
     },
     {
@@ -59,7 +68,7 @@
   const units = () => Object.fromEntries((App.unitsData || []).map((u) => [u.id, u]));
   const SECTION_ROUTES = ['circuito', 'resistori', 'binario', 'porte', 'karnaugh', 'sfide', 'formulario', 'app'];
   const SECTION_INFO = {
-    circuito: ['1ª–2ª', 'Il circuito elementare'], resistori: ['1ª–2ª', 'Resistori e resistività'],
+    circuito: ['2ª', 'Laboratorio del circuito elementare'], resistori: ['2ª', 'Laboratorio dei resistori'],
     binario: ['3ª', 'Sistemi di numerazione'], porte: ['3ª', 'Porte logiche e circuiti'], karnaugh: ['3ª', 'Algebra di Boole e Karnaugh'],
   };
 
