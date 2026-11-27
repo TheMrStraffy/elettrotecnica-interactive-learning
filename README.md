@@ -186,3 +186,7 @@ npm test
 - Elettronica: diodo (Shockley e modello a soglia), raddrizzatori e ripple, Zener dentro e fuori regolazione, BJT nelle tre zone, partitore di base esatto e approssimato, MOSFET, operazionali (invertente, non invertente, sommatore, differenziale, DAC, slew rate); latch SR confrontato con le due NOR retroazionate su tutte le combinazioni, tabelle dei flip-flop (il JK che fa da D e da T), contatori modulo 2…16 con la NAND di reset, registri, anello e Johnson fino a 8 flip-flop.
 - Terzo anno: condensatore piano, serie e parallelo, carica e scarica con le formule inverse del tempo su 200 casi casuali; campo di filo e solenoide, induttanza, forze, flusso; sommatore a 4 bit su tutte le 512 combinazioni (somma, riporto, overflow = C4 ⊕ C3, sottrazione), decoder, multiplexer, encoder a priorità, segmenti del display.
 - Reti: il risolutore riproduce i risultati del documento; correnti di ramo, maglie, Millman, sovrapposizione e Thevenin danno lo stesso risultato del risolutore su 2000 circuiti casuali; stella-triangolo, Millman a tre rami e reti miste sono verificati allo stesso modo.
+
+## Licenza
+
+Distribuito con licenza [MIT](LICENSE) © 2026 Carmelo Miuccio.

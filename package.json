@@ -2,6 +2,7 @@
   "name": "da-ohm-a-karnaugh",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "description": "Ripasso interattivo di elettrotecnica ed elettronica dalla 1ª alla 5ª superiore, installabile come app",
   "scripts": {
     "test": "node --test tests/*.test.js",
