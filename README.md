@@ -189,4 +189,4 @@ npm test
 
 ## Licenza
 
-Distribuito con licenza [Apache License 2.0](LICENSE).
+Distribuito con licenza [MIT](LICENSE) © 2026 Carmelo Miuccio.
