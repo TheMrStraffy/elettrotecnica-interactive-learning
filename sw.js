@@ -5,7 +5,7 @@
  * - I caratteri di Google Fonts si salvano la prima volta che arrivano dalla rete.
  */
 // <precache> generato da tools/build-sw.js (npm run build): non modificare a mano
-const VERSION = '2c80e8cc747b';
+const VERSION = '1a6e8f504b4f';
 const FILES = [
   './',
   'index.html',
@@ -32,6 +32,11 @@ const FILES = [
   'js/units/b-mis.js',
   'js/units/b-alg.js',
   'js/units/b-elt.js',
+  'js/basi.js',
+  'js/units/b-ene.js',
+  'js/units/b-cir.js',
+  'js/units/b-res.js',
+  'js/units/b-msr.js',
   'js/units/t-cap.js',
   'js/units/t-mag.js',
   'js/units/t-msi.js',

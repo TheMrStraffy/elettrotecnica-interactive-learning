@@ -328,7 +328,7 @@ main { padding-block: 28px 80px; }
   .panel-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
-.lab { display: grid; gap: 16px; min-width: 0; }
+.lab { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
 
 .card {
   background: var(--surface);
@@ -337,6 +337,7 @@ main { padding-block: 28px 80px; }
   box-shadow: var(--shadow);
   padding: 18px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* le tabelle larghe scorrono invece di allargare la scheda */
   gap: 14px;
   min-width: 0;
 }
@@ -1416,7 +1417,7 @@ a.unit-card:hover { border-color: var(--pen); transform: translateY(-1px); }
 
 /* ---------- Unità e lezioni ---------- */
 
-.unit-view { display: grid; gap: 20px; }
+.unit-view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
 
 .lesson-strip {
   display: flex;
@@ -1453,9 +1454,9 @@ a.unit-card:hover { border-color: var(--pen); transform: translateY(-1px); }
 
 .pill.current.done::after { color: var(--on-pen); }
 
-.lesson { display: grid; gap: 22px; }
+.lesson { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
 
-.lesson-body { display: grid; gap: 22px; }
+.lesson-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
 
 .lesson-pager { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; }
 
@@ -2046,3 +2047,152 @@ body:has(.update-bar) .toast-host { bottom: calc(96px + env(safe-area-inset-bott
 .seq-fig { overflow-x: auto; }
 
 .seq-fig svg { min-width: 440px; }
+
+/* ---------- Disegni di fisica del biennio ---------- */
+
+.phy { width: 100%; height: auto; display: block; }
+
+.phy .ground { stroke: var(--ink-2); stroke-width: 2; }
+
+.phy .hatch { stroke: var(--line-strong); stroke-width: 1.2; }
+
+.phy .body { fill: var(--surface-2); stroke: var(--wire); stroke-width: 2; }
+
+.phy .arr { color: var(--pen); }
+
+.phy .arr line { stroke: currentColor; stroke-linecap: round; }
+
+.phy .arr polygon { fill: currentColor; }
+
+.phy .arr.comp { color: var(--g3); }
+
+.phy .arr.comp line { stroke-dasharray: 6 4; }
+
+.phy .arr.s { color: var(--energy); }
+
+.phy .arr.w { color: var(--bad); }
+
+.phy .lbl { font-family: var(--f-math); font-style: italic; font-size: 17px; fill: var(--ink); }
+
+.phy .lbl.sm { font-size: 14px; }
+
+.phy .lbl.c { fill: var(--pen); }
+
+.phy .lbl.s { fill: var(--warn); font-style: normal; font-family: var(--f-mono); font-size: 12px; }
+
+.phy .lbl.w { fill: var(--bad); }
+
+.phy .sb { font-size: 11px; }
+
+.phy .note { font-family: var(--f-body); font-size: 12px; fill: var(--ink-2); }
+
+.phy .note.c { fill: var(--warn); }
+
+.phy .note.d { fill: var(--bad); }
+
+.phy .guide { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 4; }
+
+.phy .angle { fill: none; stroke: var(--ink-3); stroke-width: 1.4; }
+
+.phy .rail { fill: none; stroke: var(--ink-2); stroke-width: 3; stroke-linejoin: round; }
+
+.phy .cart { fill: var(--pen); stroke: var(--surface); stroke-width: 2; }
+
+.phy .eb.p { fill: var(--pen); }
+
+.phy .eb.c { fill: var(--energy); }
+
+.phy .eb.d { fill: var(--bad); opacity: 0.7; }
+
+.phy .ebox { fill: none; stroke: var(--ink-3); stroke-width: 1; }
+
+.phy .band.a { fill: color-mix(in srgb, var(--pen) 70%, transparent); }
+
+.phy .band.u { fill: color-mix(in srgb, var(--ok) 70%, transparent); }
+
+.phy .band.p { fill: color-mix(in srgb, var(--bad) 55%, transparent); }
+
+.tt.bill td.nm { text-align: left; font-family: var(--f-body); }
+
+.tt.bill tr.off td { color: var(--ink-3); }
+
+.tog-row { min-width: 34px; min-height: 30px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--pen); font-size: 1rem; cursor: pointer; }
+
+.tog-row[aria-pressed="true"] { background: var(--pen); color: var(--on-pen); border-color: var(--pen); }
+
+.dcs .meter { fill: var(--surface); }
+
+.dcs .meter.bad { stroke: var(--bad); fill: var(--bad-soft); }
+
+.dcs .mt { font-family: var(--f-body); font-weight: 700; font-size: 16px; fill: var(--ink); }
+
+.dcs .mt.sm { font-size: 13px; }
+
+.dcs .rd { font-family: var(--f-mono); font-size: 12.5px; fill: var(--pen); }
+
+.dcs .rd.bad, .dcs .small.bad { fill: var(--bad); }
+
+.dcs .case { fill: var(--surface-3); stroke: var(--ink-2); stroke-width: 2.5; }
+
+.dcs .fault { fill: none; stroke: var(--bad); stroke-width: 2.5; stroke-linejoin: round; }
+
+.dcs .person circle, .dcs .person path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+
+.dcs .person.danger circle, .dcs .person.danger path { stroke: var(--bad); }
+
+.dcs .earthline { stroke: var(--line-strong); stroke-width: 1.4; stroke-dasharray: 6 5; }
+
+.phy .wire-tube { fill: color-mix(in srgb, var(--energy) 14%, var(--surface)); stroke: var(--ink-2); stroke-width: 2; }
+
+.phy .section { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 3; }
+
+.phy .pos { fill: var(--bad); }
+
+.phy .el { fill: var(--pen); }
+
+.phy .smoke { fill: none; stroke: var(--ink-3); stroke-width: 3; stroke-linecap: round; opacity: 0.6; }
+
+.chart .pt { fill: var(--energy); stroke: var(--surface); stroke-width: 1.5; }
+
+.phy .tolbar { fill: color-mix(in srgb, var(--pen) 18%, transparent); stroke: var(--pen); stroke-width: 1; }
+
+.phy .tolbar.on { fill: var(--pen); }
+
+.phy .tick { stroke: var(--line-strong); stroke-width: 1; }
+
+.phy .want { stroke: var(--bad); stroke-width: 2; }
+
+.band-sel { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+
+.band-sel select { width: auto; min-width: 104px; }
+
+.chart .p3 { fill: none; stroke: var(--g3); stroke-width: 2.4; }
+
+.chart .p4 { fill: none; stroke: var(--g4); stroke-width: 2.4; }
+
+.chart .op.p1 { fill: var(--g1); } .chart .op.p2 { fill: var(--g2); } .chart .op.p3 { fill: var(--g3); } .chart .op.p4 { fill: var(--g4); }
+
+.lcd {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 12px;
+  padding: 10px 18px;
+  min-width: 200px;
+  justify-content: flex-end;
+  border-radius: 8px;
+  background: var(--display-bg);
+  color: var(--display-ink);
+  border: 3px solid #2a2d31;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.lcd-v { font-family: var(--f-mono); font-size: 2.2rem; font-weight: 600; letter-spacing: 0.04em; }
+
+.lcd-u { font-family: var(--f-mono); font-size: 1rem; opacity: 0.8; }
+
+.phy .lp { fill: var(--pen); } .phy .lc { fill: var(--energy); } .phy .ld { fill: var(--bad); }
+
+.tt.bill td { white-space: nowrap; }
+
+.tt.bill td.nm { white-space: normal; }

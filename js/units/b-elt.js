@@ -446,7 +446,7 @@
 
   App.unitsData = App.unitsData || [];
   App.unitsData.push({
-    id: 'elt', year: '1–2', yearLabel: '1ª–2ª', title: 'Carica, campo e potenziale', route: 'elt-carica', lessonWord: 'Lezione',
+    id: 'elt', year: '2', yearLabel: '2ª', title: 'Carica, campo e potenziale', route: 'elt-carica', lessonWord: 'Lezione',
     desc: 'Carica elementare, legge di Coulomb, campo elettrico e potenziale: da dove vengono tensione e corrente.',
     lessons,
   });

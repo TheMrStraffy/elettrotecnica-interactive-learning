@@ -35,7 +35,8 @@ La pagina iniziale è una mappa per anno. Le unità pronte si aprono; le altre s
 
 | Anno | Unità pronte | In arrivo |
 | --- | --- | --- |
-| 1ª–2ª | Il circuito elementare, Resistori e resistività, **Grandezze, unità e notazione scientifica**, **Formule inverse, equazioni e sistemi**, **Carica, campo e potenziale** | — |
+| 1ª | **Grandezze, unità e notazione scientifica**, **Formule inverse, equazioni e sistemi**, **Lavoro, energia e potenza** | — |
+| 2ª | **Carica, campo e potenziale**, **Il circuito elementare**, **Resistori e resistività**, **Misure elettriche e sicurezza**, più i laboratori del circuito elementare e dei resistori | — |
 | 3ª | **Reti in corrente continua** (16 lezioni, con il generatore di esercizi), **Condensatori e transitori RC**, **Magnetismo e induttori**, Sistemi di numerazione, Porte logiche e circuiti, Algebra di Boole e Karnaugh, **Circuiti combinatori integrati** | — |
 | 4ª | **Corrente alternata e fasori**, **Impedenza, RLC e risonanza**, **Potenze e rifasamento**, **Filtri passivi e Bode**, **Diodi e raddrizzatori**, **Transistor BJT e MOSFET**, **Amplificatori operazionali**, **Logica sequenziale** | — |
 | 5ª | — | Applicazioni degli operazionali, filtri attivi, oscillatori, conversione A/D e D/A, trasduttori, alimentatori, microcontrollori, controlli |
@@ -63,15 +64,21 @@ L'unità nasce dal documento "Circuiti in corrente continua — piano ed eserciz
 | 🎲 · Generatore | Scegli i circuiti (Ohm, serie, parallelo, misto, due generatori, Thevenin) e la difficoltà | Esercizi infiniti in cui cambiano valori **e incognite**, con lo svolgimento passo per passo |
 | Σ · Metodo | Guida alla scelta del metodo | Formulario e checklist |
 
-### Biennio
+### Primo e secondo anno
 
-Tre unità da 4 lezioni, con lo stesso schema delle reti: un elemento interattivo per lezione, un esempio con "Altri numeri" ed esercizi autocorretti.
+Sette unità da 4 lezioni, con lo stesso schema delle reti: un elemento interattivo per lezione, un esempio con "Altri numeri" ed esercizi autocorretti su tre livelli. In 1ª gli attrezzi (misure, calcolo, energia), in 2ª l'elettricità vera e propria, fino alle misure in laboratorio e alla sicurezza.
 
-| Unità | Lezioni e interattivi |
-| --- | --- |
-| Grandezze, unità e notazione scientifica | Unità SI (calcolatrice delle unità: V × A = W), prefissi (scala da giga a pico), notazione scientifica (valori reali su scala logaritmica e convertitore), cifre significative ed errori (arrotondamento e tolleranza di un resistore) |
-| Formule inverse, equazioni e sistemi | Formule inverse (la formula rigirata un passo alla volta), proporzionalità (diretta, inversa, quadratica con il grafico e il tasto "raddoppia"), equazioni di primo grado (soluzione passo per passo), sistemi 2×2 (due rette con Cramer in diretta e il sistema di un circuito) |
-| Carica, campo e potenziale | Carica (quanti elettroni passano), legge di Coulomb (due cariche con le forze e la curva 1/r²), campo elettrico (mappa da toccare per leggere intensità e direzione), potenziale (la collina tra due armature, con carica positiva o elettrone) |
+| Anno | Unità | Lezioni e interattivi |
+| --- | --- | --- |
+| 1ª | Grandezze, unità e notazione scientifica | Unità SI (calcolatrice delle unità: V × A = W), prefissi (scala da giga a pico), notazione scientifica (valori reali su scala logaritmica e convertitore), cifre significative ed errori (arrotondamento e tolleranza di un resistore) |
+| 1ª | Formule inverse, equazioni e sistemi | Formule inverse (la formula rigirata un passo alla volta), proporzionalità (diretta, inversa, quadratica con il grafico e il tasto "raddoppia"), equazioni di primo grado (soluzione passo per passo), sistemi 2×2 (due rette con Cramer in diretta e il sistema di un circuito) |
+| 1ª | Lavoro, energia e potenza | Lavoro e angolo (forza inclinata con la componente utile), montagne russe (energia potenziale, cinetica e calore, con o senza attrito), bilancio delle potenze di un motore (diagramma a nastro con il rendimento), bolletta di casa (apparecchi da accendere, kWh e costo) |
+| 2ª | Carica, campo e potenziale | Carica (quanti elettroni passano), legge di Coulomb (due cariche con le forze e la curva 1/r²), campo elettrico (mappa da toccare per leggere intensità e direzione), potenziale (la collina tra due armature, con carica positiva o elettrone) |
+| 2ª | Il circuito elementare | Cariche che scorrono nel filo (verso convenzionale ed elettroni, durata di una batteria), generatore reale con amperometro, voltmetro e interruttore e il punto di lavoro sul grafico, misure da annotare su resistore, lampadina e LED (ohmico o no), resistore che si scalda fino a bruciarsi secondo la sua potenza |
+| 2ª | Resistori e resistività | Codice colori a 4 e 5 fasce (dai colori al valore e viceversa), serie E12 ed E24 con le tolleranze che si toccano, filo di materiale, lunghezza e sezione a scelta, resistenza in funzione della temperatura per rame, tungsteno, costantana e NTC |
+| 2ª | Misure elettriche e sicurezza | Dove mettere amperometro e voltmetro (anche sbagliando: fusibile bruciato, lampada spenta), multimetro digitale con le portate e l'errore, effetto di carico di tester, oscilloscopio e strumento analogico, guasto in casa con messa a terra, differenziale e tipo di pavimento |
+
+Le unità della 2ª rimandano ai due laboratori storici (circuito elementare e resistori), che restano nel percorso.
 
 ### Il generatore di esercizi
 
@@ -142,7 +149,7 @@ js/lessons.js         motore delle lezioni: esercizi con correzione, esempi svol
 js/dc.js              risolutore di reti in corrente continua e metodi delle lezioni
 js/schematics.js      schemi SVG dei circuiti
 js/units/cc-*.js      unità "Reti in corrente continua"
-js/units/b-*.js       unità del biennio (grandezze, algebra, elettrostatica)
+js/units/b-*.js       unità di 1ª e 2ª (grandezze, algebra, energia, elettrostatica, circuito, resistori, misure)
 js/units/t-*.js       unità del terzo anno (condensatori, magnetismo, combinatori integrati)
 js/units/q-*.js       unità del quarto anno (alternata, RLC, potenze, filtri, diodi, transistor, operazionali, sequenziale) e strumenti comuni (fasori, scala logaritmica, oscilloscopio)
 js/units/cc-gen.js    generatore di esercizi sulle reti in continua
@@ -151,6 +158,7 @@ js/ac.js              numeri complessi, impedenze, risonanza, potenze, rifasamen
 js/semi.js            diodi, raddrizzatori, ripple, Zener, BJT, MOSFET, operazionali
 js/seq.js             latch, flip-flop, contatori, registri a scorrimento
 js/phys.js            analisi dimensionale, notazione scientifica, sistemi 2×2, Coulomb e campo, condensatori, magnetismo
+js/basi.js            lavoro ed energia, generatore reale, codice colori e serie E, resistività, strumenti, sicurezza
 js/logic.js           motore booleano: forme canoniche, Quine–McCluskey, lettore di espressioni, sommatori, decoder, display
 js/circuit.js …       laboratori (circuito, resistori, reti, binario, porte, Karnaugh, sfide)
 tests/                test dei motori di calcolo
@@ -170,7 +178,8 @@ npm test
 ```
 
 - Logica: la forma minima calcolata coincide con una ricerca esaustiva su tutte le 256 funzioni a 3 variabili e su 150 funzioni casuali a 4 variabili con indifferenze.
-- Biennio: analisi dimensionale delle unità SI, notazione scientifica e ingegneristica su 2000 valori casuali, cifre significative, sistemi 2×2 contro soluzioni note, Coulomb e campo di un dipolo.
+- 1ª e 2ª: analisi dimensionale delle unità SI, notazione scientifica e ingegneristica su 2000 valori casuali, cifre significative, sistemi 2×2 contro soluzioni note, Coulomb e campo di un dipolo; conservazione dell'energia, bilancio delle potenze del generatore reale, codice colori avanti e indietro su tutta la serie E24 da 1 Ω a 10 MΩ (4 e 5 fasce), serie normalizzate e sigle, seconda legge di Ohm e temperatura, effetto di carico e precisione del multimetro, differenziale e guasto a terra.
+- Schemi: nessun nome di schema ripetuto (un nome doppio sostituirebbe in silenzio quello di prima).
 - App: `sw.js` è aggiornato con i file e la versione attuali; il manifest ha le icone richieste da Chrome (192, 512, maskable) e le PNG hanno davvero quelle dimensioni.
 - Generatore: ogni formula di ogni circuito è coerente con lo stato calcolato; per ogni circuito e livello si generano 60 esercizi e si verifica che i dati siano puliti, che i passaggi rifatti dai soli dati portino alle risposte e che le risposte reggano gli arrotondamenti.
 - Alternata: identità dei numeri complessi su 500 coppie casuali, sinusoidi, risonanza (X_L = X_C e accordo) su 200 circuiti, potenze e Boucherot, rifasamento (il cos φ ottenuto è quello voluto), decibel, filtri e asintoti di Bode.

@@ -579,7 +579,7 @@
   };
 
   /** Ponte di Graetz con carico (e condensatore facoltativo); o.half: 'pos' | 'neg' evidenzia i diodi in conduzione. */
-  T.bridge = (p, o = {}) => {
+  T.graetz = (p, o = {}) => {
     const Tn = [230, 40];
     const Rn = [310, 140];
     const Bn = [230, 240];
@@ -677,5 +677,76 @@
     return frame(500, H, 'Amplificatore operazionale', s);
   };
 
-  App.Schem = { T, nm, capV, capH, indV, indH, acGen, diodeH, diodeV, diodeBody, npn, nmos, opamp, port, rail };
+
+  // ---------- Strumenti di misura e circuiti del biennio ----------
+  /** Strumento: cerchio con la lettera (A, V, Ω) e la lettura accanto. side: 'above' | 'below' | 'left' | 'right'. */
+  function meter(cx, cy, letter, reading, o = {}) {
+    const side = o.side || 'above';
+    const pos = { above: [cx, cy - 24, 'middle'], below: [cx, cy + 34, 'middle'], left: [cx - 24, cy + 4, 'end'], right: [cx + 24, cy + 4, 'start'] }[side];
+    return `<circle class="comp meter${o.bad ? ' bad' : ''}" cx="${cx}" cy="${cy}" r="16"/><text class="mt" x="${cx}" y="${cy + 6}" text-anchor="middle">${letter}</text>` +
+      (reading != null ? `<text class="rd${o.bad ? ' bad' : ''}" x="${pos[0]}" y="${pos[1]}" text-anchor="${pos[2]}">${reading}</text>` : '');
+  }
+  const termN = (x, y, name) => term(x, y) + `<text class="node" x="${x + 8}" y="${y - 8}">${name}</text>`;
+
+  /** Generatore reale (E e r nel riquadro) con amperometro, voltmetro ai morsetti e carico R. o.open: interruttore aperto. */
+  T.realGen = (p, o = {}) => {
+    let s = `<rect class="dashbox" x="28" y="22" width="166" height="232" rx="6"/><text class="small" x="36" y="248">generatore reale</text>`;
+    s += wire('M70 122 V50 H102 M158 50 H190 M70 158 V230 H190') + gen(70, 140, 'E', p.E) + resH(130, 50, 'r', p.r);
+    s += termN(190, 50, 'A') + termN(190, 230, 'B');
+    s += wire('M194 50 H284 M316 50 H350') + meter(300, 50, 'A', o.A, { side: 'above' });
+    if (o.open) s += wire('M350 50 L384 30') + `<circle class="term" cx="350" cy="50" r="3"/><circle class="term" cx="392" cy="50" r="3"/>` + wire('M392 50 H430 V112');
+    else s += wire('M350 50 H430 V112');
+    s += wire('M430 168 V230 H194') + resV(430, 140, 'R', p.R);
+    s += wire('M240 50 V124 M240 156 V230') + dot(240, 50) + dot(240, 230) + meter(240, 140, 'V', o.V, { side: 'right' });
+    return frame(500, 270, 'Generatore reale con carico, amperometro e voltmetro', s);
+  };
+
+  /**
+   * Inserzione degli strumenti: generatore E (con r), R1 facoltativo, carico R2.
+   * o.A: 'serie' | 'parallelo' | null; o.V: 'parallelo' (ai capi di R2) | 'serie' | null; o.rA, o.rV: letture; o.blown: fusibile bruciato.
+   */
+  T.measure = (p, o = {}) => {
+    let s = gen(70, 140, 'E', p.E);
+    s += wire('M70 122 V50 H110');
+    if (p.R1 != null) s += wire('M110 50 H142 M198 50 H230') + resH(170, 50, 'R_1', p.R1);
+    else s += wire('M110 50 H230');
+    if (o.A === 'serie') s += wire('M230 50 H264 M296 50 H360') + meter(280, 50, 'A', o.rA, { side: 'above', bad: o.blown });
+    else s += wire('M230 50 H360');
+    s += wire('M360 50 V112 M360 168 V230') + resV(360, 140, p.R1 != null ? 'R_2' : 'R', p.R2, { hl: o.hlR });
+    if (o.V === 'serie') s += wire('M360 230 H246 M214 230 H70 V158') + meter(230, 230, 'V', o.rV, { side: 'below' });
+    else s += wire('M360 230 H70 V158');
+    let x = 360;
+    if (o.A === 'parallelo') { s += wire(`M360 50 H440 V124 M440 156 V230 H360`) + dot(360, 50) + dot(360, 230) + meter(440, 140, 'A', o.rA, { side: 'right', bad: o.blown }); x = 440; }
+    if (o.V === 'parallelo') {
+      const vx = x + 80;
+      s += wire(`M${x} 50 H${vx} V124 M${vx} 156 V230 H${x}`) + dot(x, 50) + dot(x, 230) + meter(vx, 140, 'V', o.rV, { side: 'right' });
+      x = vx;
+    }
+    return frame(Math.max(460, x + 110), 270, 'Circuito con gli strumenti di misura', s);
+  };
+
+  /** Guasto a massa: rete con terra di cabina RN, differenziale, apparecchio con carcassa, terra RE e persona. */
+  T.fault = (p, o = {}) => {
+    let s = gen(60, 120, 'V', p.V);
+    s += wire('M60 102 V40 H140') + `<rect class="comp${o.trip ? ' hl' : ''}" x="140" y="26" width="52" height="28" rx="3"/><text class="mt sm" x="166" y="45" text-anchor="middle">${o.rcd ? 'ΔI' : '—'}</text>`;
+    s += `<text class="small" x="166" y="18" text-anchor="middle">${o.rcd ? (o.trip ? 'differenziale: scatta' : 'differenziale') : 'senza differenziale'}</text>`;
+    s += wire(o.trip ? 'M192 40 H206 M222 40 H280' : 'M192 40 H280') + (o.trip ? '<path class="wire" d="M206 40 L220 28"/>' : '');
+    s += `<rect class="case" x="280" y="20" width="110" height="80" rx="6"/><text class="small" x="384" y="94" text-anchor="end">carcassa</text>`;
+    s += `<path class="fault" d="M280 40 H312 L320 52 L328 40 L336 60"/><text class="small bad" x="300" y="76" text-anchor="middle">guasto</text>`;
+    s += wire('M60 138 V160') + resV(60, 190, 'R_N', p.RN) + wire('M60 218 V240') + ground(60, 240);
+    s += `<text class="small" x="18" y="280">terra della cabina</text>`;
+    if (o.earth) s += wire('M320 100 V160') + resV(320, 190, 'R_E', p.RE, { side: 'left' }) + wire('M320 218 V240') + ground(320, 240) + `<text class="small" x="320" y="280" text-anchor="middle">terra dell'impianto</text>`;
+    else s += `<text class="small bad" x="320" y="130" text-anchor="middle">nessun collegamento a terra</text>`;
+    // la persona tocca la carcassa
+    const px = 450;
+    s += `<g class="person${o.danger ? ' danger' : ''}"><circle cx="${px}" cy="62" r="11"/><path d="M${px} 73 V130 M${px} 88 L392 70 M${px} 88 L${px + 22} 115 M${px} 130 L${px - 13} 176 M${px} 130 L${px + 13} 176"/></g>`;
+    s += wire(`M${px} 178 V190`) + resV(px, 210, 'R_p', p.Rfloor) + ground(px, 238);
+    s += `<text class="small" x="${px + 26}" y="100">corpo</text><text class="small" x="${px + 26}" y="114">${p.Rbody != null ? si(p.Rbody, 'Ω') : ''}</text>`;
+    s += `<path class="earthline" d="M40 259 H500"/>`;
+    if (o.Ib != null) s += `<text class="rd${o.danger ? ' bad' : ''}" x="${px + 8}" y="40">I<tspan class="sb" dy="3">b</tspan><tspan dy="-3"> = ${si(o.Ib, 'A')}</tspan></text>`;
+    if (o.Ig != null && o.earth) s += `<text class="rd" x="330" y="150">I<tspan class="sb" dy="3">g</tspan><tspan dy="-3"> = ${si(o.Ig, 'A')}</tspan></text>`;
+    return frame(540, 290, 'Guasto a massa di un apparecchio e persona che lo tocca', s);
+  };
+
+  App.Schem = { T, nm, capV, capH, indV, indH, acGen, diodeH, diodeV, diodeBody, npn, nmos, opamp, port, rail, meter };
 })();
