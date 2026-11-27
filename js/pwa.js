@@ -7,6 +7,8 @@
   // il service worker c'è solo nel sito vero (con il manifest), non nel file unico o nelle anteprime
   const hasManifest = !!document.querySelector('link[rel="manifest"]');
   const canSW = 'serviceWorker' in navigator && /^https?:$/.test(location.protocol) && hasManifest;
+  // anteprima su un altro sito (senza manifest): lì i download sono bloccati, il backup si fa dall'app
+  const preview = /^https?:$/.test(location.protocol) && !hasManifest;
   const standalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
   const st = { reg: null, waiting: null, deferred: null, version: null, persisted: null, note: '' };
   let wantReload = false;
@@ -203,6 +205,7 @@
     const data = collect();
     if (!data) return '<p>Questo browser non permette di salvare i progressi (forse sei in navigazione privata).</p>';
     const sm = summary(data);
+    if (preview) return `<p>Hai <strong>${sm.xp} XP</strong> e hai risolto <strong>${sm.types}</strong> tipi di esercizio.</p><p class="hint">Questa è un'anteprima: i progressi restano qui. Per salvarli in un file e portarli da un dispositivo all'altro usa l'app installata.</p>`;
     return `<p>Hai <strong>${sm.xp} XP</strong> e hai risolto <strong>${sm.types}</strong> tipi di esercizio.</p>
       <p class="hint">I progressi sono salvati su questo dispositivo, nel browser. Se cancelli i dati del sito o cambi telefono li perdi: ogni tanto salva un backup. Con lo stesso file li porti dal telefono al PC.</p>
       <div class="row"><button type="button" class="btn" data-act="export">Salva un backup</button>${shareFile() ? '<button type="button" class="btn ghost" data-act="share">Condividi il backup</button>' : ''}<button type="button" class="btn ghost" data-act="import">Ripristina da un file</button></div>
